@@ -3,63 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRAM Analytical Platform | UNIZA</title>
+    <title>FRAM Analytical Platform | Ladislav Mariš</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0056b3; --accent: #d32f2f; --bg-light: #ffffff; --text-dark: #212529; }
-        body { background-color: #f8f9fa; color: var(--text-dark); font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding-top: 80px; }
+        body { background-color: #fcfcfc; color: var(--text-dark); font-family: 'Inter', 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding-top: 80px; }
         
         /* Navigácia */
         .navbar { background-color: var(--bg-light) !important; border-bottom: 3px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .navbar-brand { font-weight: bold; color: var(--primary) !important; }
-        .nav-link { color: #444 !important; font-weight: 500; margin: 0 10px; }
-        .nav-link:hover { color: var(--primary) !important; }
+        .navbar-brand { font-weight: bold; color: var(--primary) !important; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-link { color: #333 !important; font-weight: 600; margin: 0 10px; }
 
         /* Karty */
-        .card { background: var(--bg-light); border: 1px solid #dee2e6; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-header { background-color: #f1f3f5; font-weight: bold; color: var(--primary); border-bottom: 1px solid #dee2e6; text-transform: uppercase; font-size: 0.85rem; }
+        .card { background: #fff; border: 1px solid #dee2e6; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-header { background-color: #f8f9fa; font-weight: bold; color: var(--primary); border-bottom: 1px solid #dee2e6; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; padding: 12px 20px;}
 
         /* Matematika */
-        .math-box { background: #fff; border: 2px solid var(--primary); padding: 25px; border-radius: 12px; font-size: 1.5rem; font-family: "Times New Roman", serif; text-align: center; margin-bottom: 15px; position: relative; }
-        .math-box i { font-size: 0.9rem; color: var(--primary); cursor: help; margin-left: 4px; vertical-align: super; }
+        .math-box { background: #fff; border: 2px solid var(--primary); padding: 30px; border-radius: 15px; font-size: 1.6rem; font-family: "Times New Roman", serif; text-align: center; margin-bottom: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
+        .math-info-trigger { font-size: 0.9rem; color: var(--primary); cursor: pointer; margin-left: 4px; vertical-align: super; transition: 0.2s; }
+        .math-info-trigger:hover { color: var(--accent); transform: scale(1.2); }
 
         /* Výsledok */
-        .result-panel { background: #fff; border: 3px solid var(--primary); border-radius: 12px; padding: 30px; text-align: center; }
-        .risk-val { font-size: 4rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; line-height: 1; }
-        .badge-risk { font-size: 1.2rem; padding: 10px 25px; border-radius: 50px; }
+        .result-panel { background: linear-gradient(135deg, #ffffff 0%, #f1f7ff 100%); border: 3px solid var(--primary); border-radius: 15px; padding: 30px; text-align: center; position: relative; overflow: hidden; }
+        .risk-val { font-size: 4.5rem; font-weight: 900; color: var(--accent); margin-bottom: 5px; line-height: 1; text-shadow: 2px 2px 0px rgba(0,0,0,0.05); }
 
         /* Parametre */
-        .slider-label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 5px; color: #495057; }
-        .badge-val { background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
-        .info-text { font-size: 0.8rem; color: #6c757d; margin-bottom: 10px; display: block; }
+        .slider-label { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 5px; color: #333; }
+        .badge-val { background: var(--primary); color: white; padding: 5px 10px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 1.1rem; }
+        .info-text { font-size: 0.85rem; color: #555; margin-bottom: 12px; display: block; line-height: 1.3; }
 
-        /* Tabuľky */
-        .table { background: white; border-radius: 8px; overflow: hidden; }
-        .table thead { background: var(--primary); color: white; }
+        /* Autor profilovka */
+        .profile-img { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--primary); object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
 
         /* Pätička */
-        footer { background: white; border-top: 1px solid #dee2e6; padding: 40px 0; margin-top: 60px; color: #444; }
-        .footer-logo { max-height: 60px; margin-bottom: 20px; }
+        footer { background: #fff; border-top: 1px solid #dee2e6; padding: 50px 0; margin-top: 60px; }
+        .footer-logo { max-height: 80px; margin-bottom: 25px; }
         
-        section { scroll-margin-top: 100px; margin-bottom: 50px; }
-        .section-title { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-weight: bold; }
+        section { scroll-margin-top: 110px; margin-bottom: 60px; }
+        .section-title { border-left: 6px solid var(--primary); padding-left: 20px; margin-bottom: 35px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #1a1a1a; }
+        
+        /* Tooltip okno */
+        #tooltip-box { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 3px solid var(--primary); padding: 20px; z-index: 9999; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 400px; text-align: center; }
+        #tooltip-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; }
     </style>
 </head>
 <body>
 
+    <div id="tooltip-overlay" onclick="closeTooltip()"></div>
+    <div id="tooltip-box">
+        <h5 id="tooltip-title" class="fw-bold text-primary mb-3"></h5>
+        <p id="tooltip-text" class="mb-4"></p>
+        <button class="btn btn-primary btn-sm px-4" onclick="closeTooltip()">OK</button>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">FRAM PLATFORM</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-microchip me-2"></i>FRAM PLATFORM</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#methodology">Methodology</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#author">Author</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dashboard" data-i18n="menuDash">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#methodology" data-i18n="menuMeth">Methodology</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#author" data-i18n="menuAuth">Author</a></li>
                 </ul>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="setLang('en')">English</button>
-                    <button class="btn btn-sm btn-outline-primary" onclick="setLang('sk')">Slovenčina</button>
+                    <button class="btn btn-sm btn-outline-primary fw-bold" onclick="setLang('en')">EN</button>
+                    <button class="btn btn-sm btn-outline-primary fw-bold" onclick="setLang('sk')">SK</button>
                 </div>
             </div>
         </div>
@@ -73,40 +83,40 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card h-100">
-                        <div class="card-header" data-i18n="headMath">Mathematical Model Formalization</div>
+                        <div class="card-header" data-i18n="headMath">Mathematical Formalization</div>
                         <div class="card-body">
                             <div class="math-box shadow-sm">
-                                R<sub>f</sub> = (P<i title="Probability of Success (from PPS model)">ⓘ</i> * I<sub>norm</sub><i title="Normalized Impact (0-1)">ⓘ</i>) * [ 1 + γ<i title="Epistemic Uncertainty Coefficient (0-1)">ⓘ</i> * ( w<sub>1</sub><i title="Weight of Complexity">ⓘ</i>(D<sub>f</sub> - 1)<i title="Fractal Dimension (1-2)">ⓘ</i> + w<sub>2</sub> * L<sub>norm</sub><i title="Normalized Lacunarity (0-1)">ⓘ</i> ) ]
+                                R<sub>f</sub> = (P<span class="math-info-trigger" onclick="showTooltip('P')">ⓘ</span> * I<span class="math-info-trigger" onclick="showTooltip('I')">ⓘ</span>) * [ 1 + γ<span class="math-info-trigger" onclick="showTooltip('G')">ⓘ</span> * ( w<sub>1</sub><span class="math-info-trigger" onclick="showTooltip('W')">ⓘ</span>(D<sub>f</sub> - 1)<span class="math-info-trigger" onclick="showTooltip('Df')">ⓘ</span> + w<sub>2</sub> * L<sub>norm</sub><span class="math-info-trigger" onclick="showTooltip('L')">ⓘ</span> ) ]
                             </div>
-                            <div id="liveEq" class="text-center fw-bold text-primary" style="font-family: monospace; font-size: 1.1rem;"></div>
+                            <div id="liveEq" class="text-center fw-bold text-primary" style="font-family: 'Courier New', monospace; font-size: 1.1rem;"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="result-panel h-100 shadow-sm">
-                        <h6 class="text-uppercase fw-bold text-muted mb-3" data-i18n="resTitle">Total Fractal Risk (R<sub>f</sub>)</h6>
+                        <h6 class="text-uppercase fw-bold text-muted mb-3" data-i18n="resTitle">Total Risk (Rf)</h6>
                         <div class="risk-val" id="rfOut">0.000</div>
-                        <span id="riskBadge" class="badge badge-risk">N/A</span>
+                        <span id="riskBadge" class="badge bg-secondary p-2 px-4" style="font-size: 1rem;">N/A</span>
                     </div>
                 </div>
             </div>
 
             <div class="row mt-4">
                 <div class="col-lg-5">
-                    <div class="card mb-4">
-                        <div class="card-header" data-i18n="headScen">Case Studies</div>
-                        <div class="card-body d-flex gap-2">
-                            <button class="btn btn-primary w-100" onclick="loadScen('water')">Water Utility</button>
-                            <button class="btn btn-danger w-100" onclick="loadScen('campus')">Campus Target</button>
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header bg-primary text-white" data-i18n="headScen">Quick Scenario Load</div>
+                        <div class="card-body d-flex gap-2 p-2">
+                            <button class="btn btn-primary w-100 fw-bold" onclick="loadScen('water')">WATER UTILITY</button>
+                            <button class="btn btn-danger w-100 fw-bold" onclick="loadScen('campus')">UNIVERSITY CAMPUS</button>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header" data-i18n="headParams">Input Variables</div>
+                        <div class="card-header" data-i18n="headParams">Input Variables Control</div>
                         <div class="card-body">
                             <div class="slider-box">
                                 <label class="slider-label"><span>P (Probability)</span> <span class="badge-val" id="valP">0</span></label>
-                                <small class="info-text" data-i18n="descP">Probability of path breach (from PPS).</small>
+                                <small class="info-text" data-i18n="descP">Probability of breach on known paths.</small>
                                 <input type="range" class="form-range" id="inP" min="0" max="1" step="0.001" oninput="calc()">
                             </div>
                             <div class="slider-box">
@@ -116,22 +126,22 @@
                             </div>
                             <div class="slider-box">
                                 <label class="slider-label"><span>γ (Gamma)</span> <span class="badge-val" id="valG">0</span></label>
-                                <small class="info-text" data-i18n="descG">Unanalyzed space ratio (0-1).</small>
+                                <small class="info-text" data-i18n="descG">Ratio of unanalyzed facility space.</small>
                                 <input type="range" class="form-range" id="inG" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box">
-                                <label class="slider-label"><span>D<sub>f</sub> (Fractal Dim.)</span> <span class="badge-val" id="valDf">0</span></label>
-                                <small class="info-text" data-i18n="descDf">Architectural chaos (1.0 - 2.0).</small>
+                                <label class="slider-label"><span>D<sub>f</sub> (Complexity)</span> <span class="badge-val" id="valDf">0</span></label>
+                                <small class="info-text" data-i18n="descDf">Topological chaos (Box-Counting).</small>
                                 <input type="range" class="form-range" id="inDf" min="1" max="2" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box">
                                 <label class="slider-label"><span>L<sub>norm</sub> (Lacunarity)</span> <span class="badge-val" id="valL">0</span></label>
-                                <small class="info-text" data-i18n="descL">Sensor blind spots heterogeneity.</small>
+                                <small class="info-text" data-i18n="descL">Heterogeneity of blind spots texture.</small>
                                 <input type="range" class="form-range" id="inL" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box border-0">
                                 <label class="slider-label"><span>w<sub>1</sub> (Weight)</span> <span class="badge-val" id="valW">0</span></label>
-                                <small class="info-text" data-i18n="descW">Importance of barriers vs. sensors.</small>
+                                <small class="info-text" data-i18n="descW">Prioritizes barriers vs. sensors.</small>
                                 <input type="range" class="form-range" id="inW" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                         </div>
@@ -139,29 +149,19 @@
                 </div>
 
                 <div class="col-lg-7">
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">Vulnerability Decomposition</div>
-                                <div class="card-body"><canvas id="chartBar"></canvas></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">Risk Profile Radar</div>
-                                <div class="card-body"><canvas id="chartRadar"></canvas></div>
-                            </div>
-                        </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6"><div class="card h-100"><div class="card-header text-center">Decomposition</div><div class="card-body"><canvas id="chartBar"></canvas></div></div></div>
+                        <div class="col-md-6"><div class="card h-100"><div class="card-header text-center">Vulnerability Profile</div><div class="card-body"><canvas id="chartRadar"></canvas></div></div></div>
                     </div>
                     <div class="card mb-4">
-                        <div class="card-header">Sensitivity (Risk vs γ)</div>
-                        <div class="card-body"><canvas id="chartLine" height="100"></canvas></div>
+                        <div class="card-header text-center">Sensitivity Analysis (Risk vs γ)</div>
+                        <div class="card-body"><canvas id="chartLine" height="120"></canvas></div>
                     </div>
                     <div class="card">
-                        <div class="card-header">Live Interpretation</div>
-                        <div class="card-body p-0 text-dark">
-                            <table class="table table-striped mb-0">
-                                <thead><tr><th data-i18n="thVar">Var</th><th data-i18n="thStat">Status</th><th data-i18n="thMeaning">Meaning</th></tr></thead>
+                        <div class="card-header" data-i18n="tableTitle">Live Interpretation</div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-dark"><tr><th data-i18n="thVar">Var</th><th data-i18n="thStat">Status</th><th data-i18n="thMeaning">Meaning</th></tr></thead>
                                 <tbody id="tableBody"></tbody>
                             </table>
                         </div>
@@ -171,44 +171,44 @@
         </section>
 
         <section id="methodology">
-            <h2 class="section-title" data-i18n="headMeth">Methodology & Parameter Logic</h2>
-            <div class="card">
-                <div class="card-body text-dark">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-primary">Aleatoric vs Epistemic</h5>
-                            <p data-i18n="methText1">Traditional PPS models (EASI) focus on aleatoric uncertainty (probability on a known path). FRAM bridges the epistemic void—the risk of the "unknown" space within a facility.</p>
-                            <h5 class="fw-bold text-primary mt-4">Why Normalization?</h5>
-                            <p data-i18n="methText2">To avoid multicollinearity (double-counting), all inputs are scaled to [0,1]. This ensures the model remains stable across different facility sizes.</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-primary">Fractal Algorithms</h5>
-                            <p data-i18n="methText3"><strong>Box-Counting:</strong> Used to extract Df (complexity). Measures how pre-defined barriers "fill" the 2D plane.<br><strong>Gliding-Box:</strong> Used to extract L (Lacunarity). Measures the "texture" of empty sensor zones.</p>
-                            <h5 class="fw-bold text-primary mt-4">Weight Calibration (w1, w2)</h5>
-                            <p data-i18n="methText4">Weights allow for expert adjustment (e.g., via AHP) to prioritize either structural barrier complexity or sensor gap distribution.</p>
-                        </div>
+            <h2 class="section-title" data-i18n="headMeth">Scientific Methodology</h2>
+            <div class="card p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-primary"><i class="fas fa-link me-2"></i>Aleatoric vs Epistemic</h5>
+                        <p data-i18n="methText1">Conventional PPS models focus on aleatoric uncertainty (probability on a specific path). FRAM bridges the epistemic void—the risk of the unanalyzed spaces within a facility.</p>
+                        <h5 class="fw-bold text-primary mt-4"><i class="fas fa-compress-arrows-alt me-2"></i>Normalization</h5>
+                        <p data-i18n="methText2">To avoid double-counting, all inputs are scaled to [0,1]. This ensures model stability across different infrastructure sizes.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold text-primary"><i class="fas fa-project-diagram me-2"></i>Fractal Algorithms</h5>
+                        <p data-i18n="methText3"><strong>Box-Counting:</strong> Extracts Df (complexity). Measures how barriers fill the space.<br><strong>Gliding-Box:</strong> Extracts L (Lacunarity). Measures the texture of sensor blind spots.</p>
+                        <h5 class="fw-bold text-primary mt-4"><i class="fas fa-balance-scale me-2"></i>Weighting</h5>
+                        <p data-i18n="methText4">Weights (w1, w2) allow expert calibration (e.g. via AHP) to prioritize either structural barriers or sensor coverage gaps.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="author">
-            <h2 class="section-title">Researcher Profile</h2>
-            <div class="card">
-                <div class="card-body text-dark">
-                    <div class="row align-items-center text-center text-md-start">
-                        <div class="col-md-3 text-center mb-3">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 3rem;">LM</div>
-                        </div>
-                        <div class="col-md-9">
-                            <h3 class="fw-bold">Ing. Ladislav Mariš, PhD.</h3>
-                            <p class="text-primary fw-bold">Faculty of Security Engineering | University of Žilina</p>
-                            <p>Specialist in physical security modeling and applied fractal geometry. Focus on critical infrastructure resilience and system risk assessment.</p>
-                            <div class="d-flex gap-2 flex-wrap justify-content-center justify-content-md-start mt-3">
-                                <a href="mailto:ladislav.maris@uniza.sk" class="btn btn-sm btn-outline-dark">ladislav.maris@uniza.sk</a>
-                                <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-sm btn-outline-success">ORCID Profile</a>
-                                <a href="https://ladislavmaris.github.io/" target="_blank" class="btn btn-sm btn-outline-primary">GitHub Pages</a>
-                            </div>
+            <h2 class="section-title" data-i18n="menuAuth">Researcher Profile</h2>
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-3 bg-light text-center p-4 d-flex flex-column align-items-center justify-content-center">
+                        <img src="https://media.licdn.com/dms/image/v2/D4D03AQFyjpm_KW_tbQ/profile-displayphoto-scale_400_400/B4DZq1YEtMGwAk-/0/1763979578743?e=1776297600&v=beta&t=-6xmcHRcLuL7gkxlo10LsiifCYPUnNNuu-H9sv1OtGo" alt="Ladislav Mariš" class="profile-img">
+                        <h5 class="fw-bold mb-0">Ladislav Mariš</h5>
+                        <small class="text-muted">Ing. PhD.</small>
+                    </div>
+                    <div class="col-md-9 p-4">
+                        <h4 class="fw-bold text-primary">Ladislav Mariš, PhD.</h4>
+                        <p class="mb-2"><strong>Faculty of Security Engineering | University of Žilina</strong></p>
+                        <p class="text-secondary">Scientific specialist focusing on physical security modeling, critical infrastructure resilience, and the application of fractal geometry in advanced risk assessment.</p>
+                        <hr>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <a href="mailto:ladislav.maris@uniza.sk" class="btn btn-sm btn-outline-dark"><i class="fas fa-envelope me-1"></i> ladislav.maris@uniza.sk</a>
+                            <a href="https://www.linkedin.com/in/ladislav-maris/" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fab fa-linkedin me-1"></i> LinkedIn</a>
+                            <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-sm btn-outline-success"><i class="fab fa-orcid me-1"></i> ORCID Profile</a>
+                            <a href="https://ladislavmaris.github.io/" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fab fa-github me-1"></i> GitHub Pages</a>
                         </div>
                     </div>
                 </div>
@@ -219,32 +219,49 @@
 
     <footer class="text-center">
         <div class="container">
-            <img src="https://www.uniza.sk/images/uniza_logo_kombinovane.png" alt="UNIZA" class="footer-logo">
+            <img src="https://www.uniza.sk/images/fotogaleria/loga/fakulty/FBI/FBI_V_eng.png" alt="FBI UNIZA Logo" class="footer-logo">
             <p class="fw-bold mb-1">© 2025 Ladislav Mariš | FRAM Analytical Platform</p>
-            <p class="small text-muted">Faculty of Security Engineering (FBI), Žilinská univerzita v Žiline</p>
+            <p class="small text-muted">Faculty of Security Engineering (FBI), University of Žilina, Slovakia</p>
         </div>
     </footer>
 
     <script>
         let lang = 'en';
+        
         const dict = {
             en: {
-                headDash: "Risk Dashboard", headMath: "Mathematical Formalization", headScen: "Case Studies", headParams: "Variables", headMeth: "Methodology",
-                resTitle: "Total Risk (Rf)", thVar: "Var", thStat: "Status", thMeaning: "Meaning",
-                descP: "Prob. of path breach.", descI: "Normalized severity.", descG: "Unanalyzed space ratio.", descDf: "Architectural chaos.", descL: "Sensor gaps texture.", descW: "Bariers vs. Sensors weight.",
+                menuDash: "Dashboard", menuMeth: "Methodology", menuAuth: "Author",
+                headDash: "Analytical Risk Dashboard", headMath: "Mathematical Formalization", headScen: "Quick Scenario Load", headParams: "Variable Controls", headMeth: "Scientific Methodology",
+                resTitle: "Total Fractal Risk (Rf)", thVar: "Var", thStat: "Status", thMeaning: "Meaning", tableTitle: "Live Interpretation",
+                descP: "Breach probability on known paths.", descI: "Normalized consequence severity.", descG: "Ratio of unanalyzed spaces.", descDf: "Topological chaos (Box-Counting).", descL: "Sensor gaps texture (Gliding-Box).", descW: "Calibrates barriers vs. sensors.",
                 methText1: "PPS models focus on known paths. FRAM bridges the epistemic void—the risk of unknown spaces.",
                 methText2: "All inputs are scaled to [0,1] to avoid double-counting and ensure stability.",
                 methText3: "Box-Counting extracts Df (complexity). Gliding-Box extracts L (Lacunarity).",
-                methText4: "Weights allow expert adjustment (AHP) to prioritize barriers or sensors."
+                methText4: "Weights allow expert calibration (AHP) to prioritize barriers or sensors.",
+                ttTitle: "Parameter Detail",
+                ttP: "<strong>P (Probability):</strong> Derived from PPS models. Higher values mean the intruder is more likely to succeed on the main path.",
+                ttI: "<strong>I (Impact):</strong> Normalized value (0 to 1) representing the catastrophe scale.",
+                ttG: "<strong>γ (Gamma):</strong> The 'Epistemic Void'. It activates spatial penalties for non-analyzed areas.",
+                ttDf: "<strong>Df (Fractal Dimension):</strong> Measures architectural chaos. 1.0 = Empty square, 2.0 = Labyrinth.",
+                ttL: "<strong>L (Lacunarity):</strong> Measures sensor blind spot 'texture'. High L means massive safe zones for intruders.",
+                ttW: "<strong>w1 (Weight):</strong> Balancing factor. Adjusts if chaos (Df) is more dangerous than blind spots (L)."
             },
             sk: {
-                headDash: "Panel rizika", headMath: "Formalizácia modelu", headScen: "Prípadové štúdie", headParams: "Premenné", headMeth: "Metodológia",
-                resTitle: "Celkové riziko (Rf)", thVar: "Prem.", thStat: "Stav", thMeaning: "Význam",
-                descP: "Pravdepodobnosť prieniku.", descI: "Normalizovaná závažnosť.", descG: "Podiel neprebádaného priestoru.", descDf: "Architektonický chaos.", descL: "Textúra slepých uhlov.", descW: "Váha bariéry vs. senzory.",
+                menuDash: "Panel", menuMeth: "Metodológia", menuAuth: "Autor",
+                headDash: "Analytický panel rizika", headMath: "Matematická formalizácia", headScen: "Rýchle scenáre", headParams: "Ovládanie premenných", headMeth: "Vedecká metodológia",
+                resTitle: "Celkové fraktálne riziko (Rf)", thVar: "Prem.", thStat: "Stav", thMeaning: "Význam", tableTitle: "Živá interpretácia",
+                descP: "Pravdepodobnosť prieniku na trase.", descI: "Normalizovaná závažnosť následkov.", descG: "Podiel nezanalyzovaného priestoru.", descDf: "Topologický chaos (Box-Counting).", descL: "Textúra slepých uhlov (Gliding-Box).", descW: "Kalibruje vplyv bariér vs. senzorov.",
                 methText1: "PPS modely riešia známe trasy. FRAM vypĺňa epistemickú dieru—riziko neznámeho priestoru.",
                 methText2: "Vstupy sú v rozsahu [0,1] pre zamedzenie dvojitého započítania zraniteľností.",
                 methText3: "Box-Counting extrahuje Df (zložitosť). Gliding-Box extrahuje L (Lakunaritu).",
-                methText4: "Váhy (AHP) umožňujú uprednostniť vplyv bariér alebo senzorov."
+                methText4: "Váhy (AHP) umožňujú uprednostniť vplyv bariér alebo senzorov.",
+                ttTitle: "Detail parametra",
+                ttP: "<strong>P (Pravdepodobnosť):</strong> Prevzaté z PPS modelov. Vyššia hodnota = ľahší prienik útočníka.",
+                ttI: "<strong>I (Dopad):</strong> Normalizovaná hodnota (0 až 1) závažnosti katastrofy.",
+                ttG: "<strong>γ (Gama):</strong> 'Epistemický void'. Aktivuje priestorovú penalizáciu neanalyzovaných zón.",
+                ttDf: "<strong>Df (Fraktálna dimenzia):</strong> Meria chaos bariér. 1.0 = Prázdny štvorec, 2.0 = Labyrint.",
+                ttL: "<strong>L (Lakunairta):</strong> Meria 'textúru' slepých uhlov. Vysoké L = masívne voľné zóny pre útočníka.",
+                ttW: "<strong>w1 (Váha):</strong> Kalibračný faktor. Určuje, či je chaos (Df) nebezpečnejší ako slepé uhly (L)."
             }
         };
 
@@ -252,15 +269,29 @@
             lang = l;
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(dict[lang][key]) el.innerHTML = dict[lang][key];
+                if(dict[l][key]) el.innerHTML = dict[l][key];
             });
             calc();
         }
 
+        // TOOLTIP SYSTEM
+        function showTooltip(param) {
+            document.getElementById('tooltip-title').innerText = dict[lang].ttTitle;
+            document.getElementById('tooltip-text').innerHTML = dict[lang]['tt' + param];
+            document.getElementById('tooltip-overlay').style.display = 'block';
+            document.getElementById('tooltip-box').style.display = 'block';
+        }
+
+        function closeTooltip() {
+            document.getElementById('tooltip-overlay').style.display = 'none';
+            document.getElementById('tooltip-box').style.display = 'none';
+        }
+
         // CHARTS
-        const chartBar = new Chart(document.getElementById('chartBar'), { type: 'bar', data: { labels: ['Risk'], datasets: [{label:'Base',data:[0],backgroundColor:'#34495e'},{label:'Df Penalty',data:[0],backgroundColor:'#e67e22'},{label:'L Penalty',data:[0],backgroundColor:'#e74c3c'}]}, options: { indexAxis: 'y', scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true } } } });
-        const chartRadar = new Chart(document.getElementById('chartRadar'), { type: 'radar', data: { labels: ['P','I','γ','Df-1','L'], datasets: [{label:'Profile',data:[0,0,0,0,0],backgroundColor:'rgba(52,152,219,0.2)',borderColor:'#3498db'}]}, options: { scales: { r: { min: 0, max: 1 } } } });
-        const chartLine = new Chart(document.getElementById('chartLine'), { type: 'line', data: { labels: ['0.0','0.2','0.4','0.6','0.8','1.0'], datasets: [{label:'Risk Curve',data:[],borderColor:'#3498db',fill:true,tension:0.3},{label:'Current',data:[],type:'scatter',backgroundColor:'#e74c3c'}]}, options: { scales: { y: { min:0, max:1.5 } } } });
+        const cBase = { responsive: true, plugins: { legend: { display: false } } };
+        const bar = new Chart(document.getElementById('chartBar'), { type: 'bar', data: { labels: ['Risk'], datasets: [{label:'Base',data:[0],backgroundColor:'#34495e'},{label:'Df',data:[0],backgroundColor:'#e67e22'},{label:'L',data:[0],backgroundColor:'#e74c3c'}]}, options: { indexAxis: 'y', scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true } } } });
+        const radar = new Chart(document.getElementById('chartRadar'), { type: 'radar', data: { labels: ['P','I','γ','Df-1','L'], datasets: [{data:[0,0,0,0,0],backgroundColor:'rgba(52,152,219,0.2)',borderColor:'#3498db'}]}, options: { scales: { r: { min: 0, max: 1 } } } });
+        const line = new Chart(document.getElementById('chartLine'), { type: 'line', data: { labels: ['0.0','0.2','0.4','0.6','0.8','1.0'], datasets: [{label:'Risk Curve',data:[],borderColor:'#3498db',fill:true,tension:0.3},{label:'Current',data:[],type:'scatter',backgroundColor:'#e74c3c'}]}, options: { scales: { y: { min:0, max:1.5 } } } });
 
         function calc() {
             const P = parseFloat(document.getElementById('inP').value);
@@ -279,38 +310,36 @@
             document.getElementById('valW').innerText = w1.toFixed(2);
 
             const base = P * I;
-            const penDf = base * G * (w1 * (Df - 1));
-            const penL = base * G * (w2 * L);
-            const Rf = base + penDf + penL;
+            const pDf = base * G * (w1 * (Df - 1));
+            const pL = base * G * (w2 * L);
+            const Rf = base + pDf + pL;
 
             document.getElementById('rfOut').innerText = Rf.toFixed(3);
             document.getElementById('liveEq').innerText = `Rf = (${P.toFixed(3)}*${I.toFixed(2)}) * [1 + ${G.toFixed(2)} * (${w1.toFixed(2)}*(${Df.toFixed(2)}-1) + ${w2.toFixed(2)}*${L.toFixed(2)})] = ${Rf.toFixed(3)}`;
-
+            
             const b = document.getElementById('riskBadge');
-            if(Rf < 0.35) { b.className="badge bg-success badge-risk"; b.innerText="LOW"; }
-            else if(Rf < 0.75) { b.className="badge bg-warning text-dark badge-risk"; b.innerText="MEDIUM"; }
-            else { b.className="badge bg-danger badge-risk"; b.innerText="CRITICAL"; }
+            if(Rf < 0.35) { b.className="badge bg-success"; b.innerText="LOW"; }
+            else if(Rf < 0.8) { b.className="badge bg-warning text-dark"; b.innerText="MEDIUM"; }
+            else { b.className="badge bg-danger"; b.innerText="CRITICAL"; }
 
-            // Charts
-            chartBar.data.datasets[0].data = [base];
-            chartBar.data.datasets[1].data = [penDf];
-            chartBar.data.datasets[2].data = [penL];
-            chartBar.update();
+            bar.data.datasets[0].data = [base];
+            bar.data.datasets[1].data = [pDf];
+            bar.data.datasets[2].data = [pL];
+            bar.update();
 
-            chartRadar.data.datasets[0].data = [P, I, G, Df-1, L];
-            chartRadar.update();
+            radar.data.datasets[0].data = [P, I, G, Df-1, L];
+            radar.update();
 
             let curve = [];
-            for(let i=0; i<=1.0; i+=0.2) curve.push(base * (1 + i * (w1*(Df-1) + w2*L)));
-            chartLine.data.datasets[0].data = curve;
-            chartLine.data.datasets[1].data = [{x: G, y: Rf}];
-            chartLine.update();
+            for(let i=0; i<=1.01; i+=0.2) curve.push(base * (1 + i * (w1*(Df-1) + w2*L)));
+            line.data.datasets[0].data = curve;
+            line.data.datasets[1].data = [{x: G, y: Rf}];
+            line.update();
 
-            // Table
             document.getElementById('tableBody').innerHTML = `
-                <tr><td>γ</td><td>${G<0.5?'OK':'VOID'}</td><td>${G<0.5?'Good path analysis.':'High epistemic void.'}</td></tr>
-                <tr><td>Df</td><td>${Df<1.5?'Simple':'Fractal'}</td><td>${Df<1.5?'Low chaos.':'Tactical labyrinth.'}</td></tr>
-                <tr><td>L</td><td>${L<0.5?'Uniform':'Gaps'}</td><td>${L<0.5?'Good sensor texture.':'Major blind spots.'}</td></tr>
+                <tr><td>γ</td><td class="fw-bold text-primary">${G<0.4?'STABLE':'VOID'}</td><td>${G<0.4?'High path data reliability.':'Major unanalyzed spatial gaps.'}</td></tr>
+                <tr><td>Df</td><td class="fw-bold text-primary">${Df<1.5?'EUCLID':'FRACTAL'}</td><td>${Df<1.5?'Standard building geometry.':'Tactical labyrinth identified.'}</td></tr>
+                <tr><td>L</td><td class="fw-bold text-primary">${L<0.4?'UNIFORM':'GAPS'}</td><td>${L<0.4?'Even sensor distribution.':'Clustered sensor failures.'}</td></tr>
             `;
         }
 
