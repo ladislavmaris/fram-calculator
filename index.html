@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRAM Analytická Platforma | Ladislav Mariš</title>
+    <title>FRAM Analytical Platform | Ladislav Mariš</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,21 +37,21 @@
     <div id="tooltip-box">
         <h5 id="tooltip-title" class="fw-bold text-primary mb-3"></h5>
         <p id="tooltip-text" class="mb-4 text-dark"></p>
-        <button class="btn btn-primary w-100" onclick="closeTooltip()">Zavrieť / Close</button>
+        <button class="btn btn-primary w-100" onclick="closeTooltip()">Close / Zavrieť</button>
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-shield-halved me-2"></i>FRAM PLATFORMA</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-microchip me-2"></i>FRAM PLATFORM</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="#dashboard" data-i18n="menuDash">Panel</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#methodology" data-i18n="menuMeth">Metodológia</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#author" data-i18n="menuAuth">Autor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dashboard" data-i18n="menuDash">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#methodology" data-i18n="menuMeth">Methodology</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#author" data-i18n="menuAuth">Author</a></li>
                 </ul>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="setLang('sk')">SK</button>
-                    <button class="btn btn-sm btn-outline-primary" onclick="setLang('en')">EN</button>
+                    <button class="btn btn-sm btn-outline-primary" id="btnEN" onclick="setLang('en')">EN</button>
+                    <button class="btn btn-sm btn-outline-primary" id="btnSK" onclick="setLang('sk')">SK</button>
                 </div>
             </div>
         </div>
@@ -60,12 +60,12 @@
     <div class="container">
         
         <section id="dashboard">
-            <h2 class="section-title" data-i18n="headDash">Analytický panel rizika</h2>
+            <h2 class="section-title" data-i18n="headDash">Analytical Risk Dashboard</h2>
             
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card h-100">
-                        <div class="card-header" data-i18n="headMath">Matematická formalizácia modelu</div>
+                        <div class="card-header" data-i18n="headMath">Mathematical Formalization</div>
                         <div class="card-body">
                             <div class="math-box shadow-sm">
                                 R<sub>f</sub> = (P<span class="math-info-trigger" onclick="showTooltip('P')">ⓘ</span> * I<span class="math-info-trigger" onclick="showTooltip('I')">ⓘ</span>) * [ 1 + γ<span class="math-info-trigger" onclick="showTooltip('G')">ⓘ</span> * ( w<sub>1</sub><span class="math-info-trigger" onclick="showTooltip('W')">ⓘ</span>(D<sub>f</sub> - 1)<span class="math-info-trigger" onclick="showTooltip('Df')">ⓘ</span> + w<sub>2</sub> * L<sub>norm</sub><span class="math-info-trigger" onclick="showTooltip('L')">ⓘ</span> ) ]
@@ -76,7 +76,7 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="result-panel h-100 shadow-sm">
-                        <h6 class="text-uppercase fw-bold text-muted mb-3" data-i18n="resTitle">Celkové fraktálne riziko (Rf)</h6>
+                        <h6 class="text-uppercase fw-bold text-muted mb-3" data-i18n="resTitle">Total Fractal Risk (Rf)</h6>
                         <div class="risk-val" id="rfOut">0.000</div>
                         <span id="riskBadge" class="badge p-2 px-4 mt-3" style="font-size: 1.1rem;">-</span>
                     </div>
@@ -86,44 +86,47 @@
             <div class="row mt-4">
                 <div class="col-lg-5">
                     <div class="card border-primary">
-                        <div class="card-header bg-primary text-white" data-i18n="headScen">Rýchle načítanie scenárov</div>
-                        <div class="card-body d-flex gap-2">
-                            <button class="btn btn-outline-primary w-100" onclick="loadScen('water')">Vodáreň</button>
-                            <button class="btn btn-outline-danger w-100" onclick="loadScen('campus')">Univerzitný areál</button>
+                        <div class="card-header bg-primary text-white" data-i18n="headScen">Quick Scenario Load</div>
+                        <div class="card-body d-flex gap-2 p-2">
+                            <button class="btn btn-primary w-100 fw-bold" onclick="loadScen('water')">WATER UTILITY</button>
+                            <button class="btn btn-danger w-100 fw-bold" onclick="loadScen('campus')">CAMPUS TARGET</button>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header" data-i18n="headParams">Ovládanie vstupných premenných</div>
+                        <div class="card-header" data-i18n="headParams">Input Variable Controls</div>
                         <div class="card-body">
                             <div class="slider-box">
-                                <label class="slider-label"><span>P (Pravdepodobnosť)</span> <span class="badge-val" id="valP">0</span></label>
-                                <small class="info-text-detail" data-i18n="descP">Pravdepodobnosť narušenia objektu na definovanej trase (výstup z PPS modelu).</small>
+                                <label class="slider-label"><span>P (Probability)</span> <span class="badge-val" id="valP">0</span></label>
+                                <small class="info-text-detail" data-i18n="descP">Prob. of breach on known paths. Source: PPS software (EASI).</small>
                                 <input type="range" class="form-range" id="inP" min="0" max="1" step="0.001" oninput="calc()">
                             </div>
                             <div class="slider-box">
-                                <label class="slider-label"><span>I (Dopad)</span> <span class="badge-val" id="valI">0</span></label>
-                                <small class="info-text-detail" data-i18n="descI">Normalizovaná miera následkov úspešného útoku na chránené aktívum (0-1).</small>
+                                <label class="slider-label"><span>I (Impact)</span> <span class="badge-val" id="valI">0</span></label>
+                                <small class="info-text-detail" data-i18n="descI">Normalized severity of consequences [0-1]. Method: Impact matrix.</small>
                                 <input type="range" class="form-range" id="inI" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box">
-                                <label class="slider-label"><span>γ (Gama - Epistemický koeficient)</span> <span class="badge-val" id="valG">0</span></label>
-                                <small class="info-text-detail" data-i18n="descG">Koeficient neurčitosti vyjadrujúci podiel priestoru, ktorý nebol pokrytý klasickou analýzou trás.</small>
+                                <label class="slider-label"><span>γ (Epistemic Void)</span> <span class="badge-val" id="valG">0</span></label>
+                                <small class="info-text-detail" data-i18n="descG">Ratio of unanalyzed spaces. Method: Scale-area analysis.</small>
                                 <input type="range" class="form-range" id="inG" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box">
-                                <label class="slider-label"><span>D<sub>f</sub> (Fraktálna dimenzia)</span> <span class="badge-val" id="valDf">0</span></label>
-                                <small class="info-text-detail" data-i18n="descDf">Miera priestorovej zložitosti a chaosu bariér. Hodnoty: 1.0 (jednoduché) až 2.0 (labyrint).</small>
+                                <label class="slider-label"><span>D<sub>f</sub> (Complexity)</span> <span class="badge-val" id="valDf">0</span></label>
+                                <small class="info-text-detail" data-i18n="descDf">Barrier chaos. Method: Box-Counting [1.0 - 2.0].</small>
                                 <input type="range" class="form-range" id="inDf" min="1" max="2" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box">
-                                <label class="slider-label"><span>L<sub>norm</sub> (Lakunarita)</span> <span class="badge-val" id="valL">0</span></label>
-                                <small class="info-text-detail" data-i18n="descL">Vyjadruje heterogenitu a zhlukovitosť "hluchých miest" v detekčnom systéme.</small>
+                                <label class="slider-label"><span>L<sub>norm</sub> (Lacunarity)</span> <span class="badge-val" id="valL">0</span></label>
+                                <small class="info-text-detail" data-i18n="descL">Sensor gaps texture. Method: Gliding-Box [0-1].</small>
                                 <input type="range" class="form-range" id="inL" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                             <div class="slider-box border-0">
-                                <label class="slider-label"><span>w<sub>1</sub> (Váha zložitosti)</span> <span class="badge-val" id="valW">0</span></label>
-                                <small class="info-text-detail" data-i18n="descW">Určuje prioritu medzi vplyvom zložitosti bariér (Df) a textúrou senzorových medzier (L).</small>
+                                <label class="slider-label">
+                                    <span>w<sub>1</sub> (Barriers) | w<sub>2</sub> (Sensors)</span> 
+                                    <span><span class="badge-val" id="valW1">0</span> : <span class="badge-val" id="valW2">0</span></span>
+                                </label>
+                                <small class="info-text-detail" data-i18n="descW">Calibration weights. Method: AHP (Expert judgment).</small>
                                 <input type="range" class="form-range" id="inW" min="0" max="1" step="0.01" oninput="calc()">
                             </div>
                         </div>
@@ -131,19 +134,19 @@
                 </div>
 
                 <div class="col-lg-7">
-                    <div class="row">
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartBar">Rozklad rizika</div><div class="card-body"><canvas id="chartBar"></canvas></div></div></div>
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartRadar">Profil zraniteľnosti</div><div class="card-body"><canvas id="chartRadar"></canvas></div></div></div>
+                    <div class="row mb-4">
+                        <div class="col-md-6"><div class="card h-100"><div class="card-header text-center" data-i18n="chartBar">Risk Decomposition</div><div class="card-body"><canvas id="chartBar"></canvas></div></div></div>
+                        <div class="col-md-6"><div class="card h-100"><div class="card-header text-center" data-i18n="chartRadar">Vulnerability Profile</div><div class="card-body"><canvas id="chartRadar"></canvas></div></div></div>
                     </div>
                     <div class="card mb-4">
-                        <div class="card-header text-center" data-i18n="chartLine">Analýza citlivosti (Riziko vs Gama)</div>
+                        <div class="card-header text-center" data-i18n="chartLine">Sensitivity Analysis (Risk vs γ)</div>
                         <div class="card-body"><canvas id="chartLine" height="120"></canvas></div>
                     </div>
                     <div class="card">
-                        <div class="card-header" data-i18n="tableTitle">Interpretácia stavu premenných</div>
+                        <div class="card-header" data-i18n="tableTitle">Dynamic Scientific Interpretation</div>
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0">
-                                <thead class="table-dark"><tr><th data-i18n="thVar">Prem.</th><th data-i18n="thStat">Stav</th><th data-i18n="thMeaning">Význam</th></tr></thead>
+                                <thead class="table-dark"><tr><th data-i18n="thVar">Var</th><th data-i18n="thStat">Status</th><th data-i18n="thMeaning">Meaning</th></tr></thead>
                                 <tbody id="tableBody"></tbody>
                             </table>
                         </div>
@@ -153,31 +156,31 @@
         </section>
 
         <section id="methodology">
-            <h2 class="section-title" data-i18n="headMeth">Kapitola 3: Metodológia výpočtu</h2>
+            <h2 class="section-title" data-i18n="headMeth">Methodology & Parameter Logic</h2>
             <div class="card p-4">
                 <div class="row">
                     <div class="col-12 meth-item">
-                        <h4 class="text-primary fw-bold">3.1 Od PPS k Fraktálnemu modelu (FRAM)</h4>
-                        <p data-i18n="meth31">Klasické modely fyzickej ochrany (EASI, Savanna) pracujú s aleatorickou neurčitosťou – teda s pravdepodobnosťou na presne definovanej trase. Metodológia FRAM rozširuje tento koncept o epistemickú neurčitosť (koeficient γ), ktorá penalizuje "neznámy" priestor objektu. Výsledné riziko nie je len súčinom P*I, ale je modifikované priestorovou topológiou.</p>
+                        <h4 class="text-primary fw-bold" data-i18n="methTitle1">From PPS to Fractal Risk (FRAM)</h4>
+                        <p data-i18n="methText1">Conventional models calculate aleatoric uncertainty (probability on a known path). FRAM bridges the epistemic void—the risk of unknown space within a facility using non-Euclidean geometry.</p>
                     </div>
                     <div class="col-md-6 meth-item">
-                        <h5 class="fw-bold text-dark">3.2 Algoritmus Box-Counting (Df)</h5>
-                        <p data-i18n="meth32">Fraktálna dimenzia Df kvantifikuje, ako efektívne bariéry vypĺňajú priestor. Algoritmus prekrýva pôdorys objektu mriežkou o veľkosti ε a počíta počet obsadených buniek N(ε). Sklon regresnej priamky v log-log grafe určuje Df. Čím je Df vyššie, tým je objekt pre útočníka nepredvídateľnejší (labyrint).</p>
+                        <h5 class="fw-bold text-dark" data-i18n="methTitle2">Box-Counting Method (Df)</h5>
+                        <p data-i18n="methText2">Df measures how barriers fill the 2D plane. We use a grid ε to count occupied cells N(ε). Scale [1.0 - 2.0] allows for a linear penalty transition: 1.0 (empty) to 2.0 (total chaos).</p>
                     </div>
                     <div class="col-md-6 meth-item">
-                        <h5 class="fw-bold text-dark">3.3 Analýza Lakunarity (L)</h5>
-                        <p data-i18n="meth33">Kým Df meria "zaplnenosť", Lakunarita (L) meria "textúru prázdnoty". Pomocou metódy Gliding-Box analyzujeme distribúciu slepých miest senzorov. Vysoká lakunarita indikuje, že senzory sú nerovnomerne rozmiestnené, čo vytvára veľké, súvislé koridory pre skrytý pohyb útočníka.</p>
+                        <h5 class="fw-bold text-dark" data-i18n="methTitle3">Gliding-Box Lacunarity (L)</h5>
+                        <p data-i18n="methText3">Lacunarity (L) quantifies the 'texture' of blind spots. It identifies if gaps are uniform or clustered. Normalization to [0,1] enables integration into the risk equation without scale bias.</p>
                     </div>
                     <div class="col-12 meth-item border-0">
-                        <h5 class="fw-bold text-dark">3.4 Normalizácia a Váhy (w1, w2)</h5>
-                        <p data-i18n="meth34">Aby sme predišli multikolinearite, všetky vstupy sú normalizované na interval [0,1]. Váhy sú kalibrované expertnou metódou (napr. AHP), kde w1 reprezentuje vplyv pasívnych bariér a w2 vplyv technických zabezpečovacích prostriedkov. Tento prístup umožňuje adaptáciu modelu na rôzne typy kritickej infraštruktúry.</p>
+                        <h5 class="fw-bold text-dark" data-i18n="methTitle4">Normalization & AHP Weights (w1, w2)</h5>
+                        <p data-i18n="methText4">Weights w1 (barriers) and w2 (sensors) are complementary (w1 + w2 = 1). They are determined by the AHP method (Analytic Hierarchy Process) to adjust for specific facility types.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="author">
-            <h2 class="section-title" data-i18n="menuAuth">Profil výskumníka</h2>
+            <h2 class="section-title" data-i18n="menuAuth">Researcher Profile</h2>
             <div class="card border-0 shadow-sm overflow-hidden">
                 <div class="row g-0">
                     <div class="col-md-3 bg-light text-center p-4 d-flex flex-column align-items-center justify-content-center">
@@ -186,13 +189,13 @@
                     </div>
                     <div class="col-md-9 p-4">
                         <h4 class="fw-bold text-primary">Ladislav Mariš</h4>
-                        <p class="mb-2"><strong>Fakulta bezpečnostného inžinierstva | Žilinská univerzita v Žiline</strong></p>
-                        <p class="text-secondary" data-i18n="authDesc">Design of security systems, Software support, Cyber security, Surveillance systems, IT technologies, Artificial Intelligence, Erasmus+ projects, Education.</p>
+                        <p class="mb-2"><strong data-i18n="authFac">Faculty of Security Engineering | University of Žilina</strong></p>
+                        <p class="text-secondary">Design of security systems, Software support, Cyber security, Surveillance systems, IT technologies, Artificial Intelligence, Erasmus+ projects, Education.</p>
                         <hr>
                         <div class="d-flex flex-wrap gap-2 mt-3">
                             <a href="mailto:ladislav.maris@uniza.sk" class="btn btn-sm btn-outline-dark"><i class="fas fa-envelope me-1"></i> ladislav.maris@uniza.sk</a>
                             <a href="https://www.linkedin.com/in/ladislav-maris/" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fab fa-linkedin me-1"></i> LinkedIn</a>
-                            <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-sm btn-outline-success"><i class="fab fa-orcid me-1"></i> ORCID</a>
+                            <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-sm btn-outline-success"><i class="fab fa-orcid me-1"></i> ORCID Profile</a>
                         </div>
                     </div>
                 </div>
@@ -203,75 +206,83 @@
 
     <footer class="text-center">
         <div class="container">
-            <img src="https://www.uniza.sk/images/fotogaleria/loga/fakulty/FBI/FBI_V_eng.png" alt="Žilinská univerzita" class="footer-logo">
-            <p class="fw-bold mb-1">© 2025 Ladislav Mariš | FRAM Analytická platforma</p>
-            <p class="small text-muted">Fakulta bezpečnostného inžinierstva, Žilinská univerzita v Žiline</p>
+            <img src="https://www.uniza.sk/images/fotogaleria/loga/fakulty/FBI/FBI_V_eng.png" alt="University of Žilina" class="footer-logo">
+            <p class="fw-bold mb-1">© 2026 Ladislav Mariš | FRAM Analytical Platform</p>
+            <p class="small text-muted" data-i18n="footerSub">Faculty of Security Engineering, University of Žilina, Slovakia</p>
         </div>
     </footer>
 
     <script>
-        let lang = 'sk';
+        let lang = 'en';
         const dict = {
-            sk: {
-                menuDash: "Panel", menuMeth: "Metodológia", menuAuth: "Autor",
-                headDash: "Analytický panel rizika", headMath: "Matematická formalizácia modelu", headScen: "Rýchle načítanie scenárov", headParams: "Ovládanie vstupných premenných", headMeth: "Kapitola 3: Metodológia výpočtu",
-                resTitle: "Celkové fraktálne riziko (Rf)", thVar: "Prem.", thStat: "Stav", thMeaning: "Význam", tableTitle: "Interpretácia stavu premenných",
-                chartBar: "Rozklad rizika", chartRadar: "Profil zraniteľnosti", chartLine: "Analýza citlivosti",
-                descP: "Pravdepodobnosť narušenia objektu na definovanej trase (výstup z PPS modelu).",
-                descI: "Normalizovaná miera následkov úspešného útoku na chránené aktívum (0-1).",
-                descG: "Koeficient neurčitosti vyjadrujúci podiel priestoru, ktorý nebol pokrytý klasickou analýzou trás.",
-                descDf: "Miera priestorovej zložitosti a chaosu bariér. Hodnoty: 1.0 (jednoduché) až 2.0 (labyrint).",
-                descL: "Vyjadruje heterogenitu a zhlukovitosť 'hluchých miest' v detekčnom systéme.",
-                descW: "Určuje prioritu medzi vplyvom zložitosti bariér (Df) a textúrou senzorových medzier (L).",
-                meth31: "Klasické modely fyzickej ochrany pracujú s aleatorickou neurčitosťou. FRAM rozširuje tento koncept o epistemickú neurčitosť (γ), ktorá penalizuje neznámy priestor objektu.",
-                meth32: "Fraktálna dimenzia Df kvantifikuje efektivitu bariér v priestore cez algoritmus mriežky. Vyššie Df znamená vyšší taktický chaos pre útočníka.",
-                meth33: "Lakunarita (L) meria 'textúru prázdnoty' v senzorovom poli. Vysoká hodnota indikuje nebezpečné koridory bez pokrytia.",
-                meth34: "Normalizácia na interval [0,1] zamedzuje chybám vo výpočte. Váhy w1 a w2 umožňujú prispôsobiť model typu objektu cez expertnú analýzu.",
-                authDesc: "Design of security systems, Software support, Cyber security, Surveillance systems, IT technologies, Artificial Intelligence, Erasmus+ projects, Education.",
-                ttTitle: "Detail parametra",
-                ttP: "<strong>P (Pravdepodobnosť):</strong> Hodnota prevzatá z výpočtov typu EASI. Vyššia hodnota znamená slabšie zabezpečenie hlavných trás.",
-                ttI: "<strong>I (Dopad):</strong> Finančná alebo spoločenská strata v prípade narušenia aktíva.",
-                ttG: "<strong>γ (Gama):</strong> Most medzi známym a neznámym priestorom objektu. Aktivuje vplyv fraktálnej geometrie na celkové riziko.",
-                ttDf: "<strong>Df (Dimenzia):</strong> Kvantifikácia architektonického labyrintu. 1.0 je rovina, 2.0 je maximálna zložitosť.",
-                ttL: "<strong>L (Lakunairta):</strong> Geometrický popis rozptylu senzorov. Nízka hodnota = ideálne rovnomerné pokrytie.",
-                ttW: "<strong>w1 (Váha):</strong> Vyjadruje dôležitosť fyzických bariér v celkovej stratégii ochrany.",
-                low: "NÍZKE", med: "STREDNÉ", crit: "KRITICKÉ"
-            },
             en: {
                 menuDash: "Dashboard", menuMeth: "Methodology", menuAuth: "Author",
-                headDash: "Risk Dashboard", headMath: "Mathematical Formalization", headScen: "Quick Scenarios", headParams: "Variable Controls", headMeth: "Chapter 3: Calculation Methodology",
-                resTitle: "Total Fractal Risk (Rf)", thVar: "Var", thStat: "Status", thMeaning: "Meaning", tableTitle: "Live Interpretation",
-                chartBar: "Risk Decomposition", chartRadar: "Vulnerability Profile", chartLine: "Sensitivity Analysis",
-                descP: "Breach probability on a defined path (PPS output).",
-                descI: "Normalized impact of a successful attack on the asset (0-1).",
-                descG: "Uncertainty coefficient representing unanalyzed spatial ratio.",
-                descDf: "Spatial complexity and barrier chaos. Scale: 1.0 (simple) to 2.0 (labyrinth).",
-                descL: "Heterogeneity and clustering of blind spots in the detection system.",
-                descW: "Balance between barrier complexity (Df) and sensor gap texture (L).",
-                meth31: "Conventional models focus on aleatoric uncertainty. FRAM adds epistemic uncertainty (γ) to penalize unanalyzed space.",
-                meth32: "Df quantifies barrier efficiency using the grid algorithm. Higher Df implies higher tactical chaos for an intruder.",
-                meth33: "Lacunarity (L) measures 'void texture' in sensor fields. High values indicate dangerous gaps in coverage.",
-                meth34: "Normalization to [0,1] prevents calculation errors. Weights w1 and w2 allow expert calibration via AHP.",
-                authDesc: "Design of security systems, Software support, Cyber security, Surveillance systems, IT technologies, Artificial Intelligence, Erasmus+ projects, Education.",
+                headDash: "Risk Dashboard", headMath: "Mathematical Formalization", headScen: "Quick Scenario Load", headParams: "Variable Controls", headMeth: "Chapter 3: Methodology",
+                resTitle: "Total Risk (Rf)", thVar: "Var", thStat: "Stat", thMeaning: "Meaning", tableTitle: "Interpretation",
+                chartBar: "Decomposition", chartRadar: "Vulnerability Profile", chartLine: "Sensitivity Curve",
+                descP: "Prob. of path breach. Method: PPS Software (EASI).",
+                descI: "Impact of success. Method: Normalization [0-1].",
+                descG: "Epistemic Uncertainty. Method: Unanalyzed area ratio.",
+                descDf: "Barrier chaos. Method: Box-Counting [1-2].",
+                descL: "Sensor gaps texture. Method: Gliding-Box [0-1].",
+                descW: "Weights. Method: Expert AHP (Analytic Hierarchy Process).",
+                methTitle1: "From PPS to Fractal Risk (FRAM)", methText1: "Conventional models focus on aleatoric uncertainty. FRAM bridges the epistemic void using non-Euclidean geometry.",
+                methTitle2: "Box-Counting Method (Df)", methText2: "Df measures how barriers fill the plane. ε grid counts cells N(ε). Range [1-2] provides linear scaling.",
+                methTitle3: "Gliding-Box Lacunarity (L)", methText3: "Quantifies sensor blind spot texture. Normalization [0,1] enables mathematical integration.",
+                methTitle4: "Normalization & AHP Weights", methText4: "Weights w1 and w2 (sum=1) are determined by AHP for specific facility types.",
+                authFac: "Faculty of Security Engineering | University of Žilina", footerSub: "Faculty of Security Engineering, University of Žilina, Slovakia",
                 ttTitle: "Parameter Detail",
-                ttP: "<strong>P (Probability):</strong> Derived from path-based models. Higher values mean weaker perimeter defenses.",
-                ttI: "<strong>I (Impact):</strong> Financial or societal loss if the asset is compromised.",
-                ttG: "<strong>γ (Gamma):</strong> Bridge between known and unknown spaces. Activates fractal penalty logic.",
-                ttDf: "<strong>Df (Dimension):</strong> Quantification of architectural labyrinth. 1.0 is flat, 2.0 is max complexity.",
-                ttL: "<strong>L (Lacunarity):</strong> Geometric description of sensor spread. Low values = ideal uniform coverage.",
-                ttW: "<strong>w1 (Weight):</strong> Importance of physical barriers in the overall security strategy.",
-                low: "LOW", med: "MEDIUM", crit: "CRITICAL"
+                ttP: "<strong>P (Probability):</strong> Taken from EASI software. Higher values = easier path breach.",
+                ttI: "<strong>I (Impact):</strong> Normalized catastrophe scale [0-1].",
+                ttG: "<strong>γ (Gamma):</strong> The bridge coefficient. Activates spatial penalty logic.",
+                ttDf: "<strong>Df (Dimension):</strong> Measures structural labyrinth. 1.0 (flat), 2.0 (total chaos).",
+                ttL: "<strong>L (Lacunarity):</strong> Sensor gap texture. High L = massive unsafe corridors.",
+                ttW: "<strong>w1/w2 (Weights):</strong> Balance factor. Determines which spatial defect is more critical.",
+                low: "LOW", med: "MEDIUM", crit: "CRITICAL",
+                tblG_ok: "STABLE", tblG_err: "VOID", tblDf_ok: "EUCLID", tblDf_err: "FRACTAL", tblL_ok: "UNIFORM", tblL_err: "GAPS"
+            },
+            sk: {
+                menuDash: "Panel", menuMeth: "Metodológia", menuAuth: "Autor",
+                headDash: "Analytický panel rizika", headMath: "Matematická formalizácia", headScen: "Rýchle scenáre", headParams: "Ovládanie premenných", headMeth: "Kapitola 3: Metodológia",
+                resTitle: "Celkové riziko (Rf)", thVar: "Prem.", thStat: "Stav", thMeaning: "Význam", tableTitle: "Interpretácia",
+                chartBar: "Rozklad rizika", chartRadar: "Profil zraniteľnosti", chartLine: "Analýza citlivosti",
+                descP: "Pravdepodobnosť prieniku. Metóda: PPS Softvér (EASI).",
+                descI: "Závažnosť dopadu. Metóda: Normalizácia [0-1].",
+                descG: "Epistemická neistota. Metóda: Pomer neanalyzovanej plochy.",
+                descDf: "Chaos bariér. Metóda: Box-Counting [1-2].",
+                descL: "Textúra slepých uhlov. Metóda: Gliding-Box [0-1].",
+                descW: "Váhy. Metóda: Expertné AHP (Analytic Hierarchy Process).",
+                methTitle1: "Od PPS k Fraktálnemu riziku (FRAM)", methText1: "Tradičné modely riešia aleatorickú neistotu. FRAM vypĺňa epistemickú dieru pomocou neeuklidovskej geometrie.",
+                methTitle2: "Metóda Box-Counting (Df)", methText2: "Df meria zaplnenosť plochy bariérami cez mriežku ε. Rozsah [1-2] zabezpečuje lineárnu penalizáciu.",
+                methTitle3: "Gliding-Box Lakunarita (L)", methText3: "Kvantifikuje textúru slepých uhlov. Normalizácia na [0,1] umožňuje integráciu do vzorca.",
+                methTitle4: "Normalizácia a AHP váhy", methText4: "Váhy w1 a w2 (súčet=1) sú určené metódou AHP pre konkrétny typ objektu.",
+                authFac: "Fakulta bezpečnostného inžinierstva | Žilinská univerzita v Žiline", footerSub: "Fakulta bezpečnostného inžinierstva, Žilinská univerzita v Žiline",
+                ttTitle: "Detail parametra",
+                ttP: "<strong>P (Pravdepodobnosť):</strong> Prevzaté z EASI. Vyššia hodnota = ľahší prienik.",
+                ttI: "<strong>I (Dopad):</strong> Normalizovaná závažnosť katastrofy [0-1].",
+                ttG: "<strong>γ (Gama):</strong> Koeficient premostenia. Aktivuje priestorovú penalizáciu.",
+                ttDf: "<strong>Df (Dimenzia):</strong> Meria labyrint bariér. 1.0 (rovina), 2.0 (maximálny chaos).",
+                ttL: "<strong>L (Lakunairta):</strong> Textúra dier senzorov. Vysoké L = masívne nechránené koridory.",
+                ttW: "<strong>w1/w2 (Váhy):</strong> Faktor rovnováhy. Určuje, ktorý priestorový defekt je kritickejší.",
+                low: "NÍZKE", med: "STREDNÉ", crit: "KRITICKÉ",
+                tblG_ok: "STABILNÉ", tblG_err: "PRÁZDNE", tblDf_ok: "EUKLID", tblDf_err: "FRAKTÁL", tblL_ok: "OK", tblL_err: "DIERY"
             }
         };
 
         function setLang(l) {
             lang = l;
+            document.getElementById('btnEN').classList.toggle('btn-primary', l==='en');
+            document.getElementById('btnSK').classList.toggle('btn-primary', l==='sk');
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[l][key]) el.innerHTML = dict[l][key];
             });
             calc();
         }
+
+        const bar = new Chart(document.getElementById('chartBar'), { type: 'bar', data: { labels: ['Risk'], datasets: [{label:'Base',data:[0],backgroundColor:'#34495e'},{label:'Df Pen.',data:[0],backgroundColor:'#e67e22'},{label:'L Pen.',data:[0],backgroundColor:'#e74c3c'}]}, options: { indexAxis: 'y', scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true } }, plugins: { legend: { display: false } } } });
+        const radar = new Chart(document.getElementById('chartRadar'), { type: 'radar', data: { labels: ['P','I','γ','Df-1','L'], datasets: [{data:[0,0,0,0,0],backgroundColor:'rgba(52,152,219,0.2)',borderColor:'#3498db'}]}, options: { scales: { r: { min: 0, max: 1 } }, plugins: { legend: { display: false } } } });
+        const line = new Chart(document.getElementById('chartLine'), { type: 'line', data: { labels: ['0.0','0.2','0.4','0.6','0.8','1.0'], datasets: [{label:'Rf Curve',data:[],borderColor:'#3498db',fill:true,tension:0.3},{data:[],type:'scatter',backgroundColor:'#e74c3c'}]}, options: { plugins: { legend: { display: false } }, scales: { y: { min:0, max:1.5 } } } });
 
         function showTooltip(p) {
             document.getElementById('tooltip-title').innerText = dict[lang].ttTitle;
@@ -284,10 +295,6 @@
             document.getElementById('tooltip-overlay').style.display = 'none';
             document.getElementById('tooltip-box').style.display = 'none';
         }
-
-        const bar = new Chart(document.getElementById('chartBar'), { type: 'bar', data: { labels: ['Risk'], datasets: [{label:'Základ',data:[0],backgroundColor:'#34495e'},{label:'Df Pen.',data:[0],backgroundColor:'#e67e22'},{label:'L Pen.',data:[0],backgroundColor:'#e74c3c'}]}, options: { indexAxis: 'y', scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true } }, plugins: { legend: { display: false } } } });
-        const radar = new Chart(document.getElementById('chartRadar'), { type: 'radar', data: { labels: ['P','I','γ','Df-1','L'], datasets: [{data:[0,0,0,0,0],backgroundColor:'rgba(52,152,219,0.2)',borderColor:'#3498db'}]}, options: { scales: { r: { min: 0, max: 1 } }, plugins: { legend: { display: false } } } });
-        const line = new Chart(document.getElementById('chartLine'), { type: 'line', data: { labels: ['0.0','0.2','0.4','0.6','0.8','1.0'], datasets: [{label:'Rf',data:[],borderColor:'#3498db',fill:true,tension:0.3},{data:[],type:'scatter',backgroundColor:'#e74c3c'}]}, options: { plugins: { legend: { display: false } }, scales: { y: { min:0, max:1.5 } } } });
 
         function calc() {
             const P = parseFloat(document.getElementById('inP').value);
@@ -303,7 +310,8 @@
             document.getElementById('valG').innerText = G.toFixed(2);
             document.getElementById('valDf').innerText = Df.toFixed(2);
             document.getElementById('valL').innerText = L.toFixed(2);
-            document.getElementById('valW').innerText = w1.toFixed(2);
+            document.getElementById('valW1').innerText = w1.toFixed(2);
+            document.getElementById('valW2').innerText = w2.toFixed(2);
 
             const base = P * I;
             const pDf = base * G * (w1 * (Df - 1));
@@ -333,9 +341,9 @@
             line.update();
 
             document.getElementById('tableBody').innerHTML = `
-                <tr><td>γ</td><td class="fw-bold">${G<0.4?'OK':'NEISTOTA'}</td><td>${G<0.4?'Analýza trás je spoľahlivá.':'Vysoká neistota v priestore.'}</td></tr>
-                <tr><td>Df</td><td class="fw-bold">${Df<1.5?'NÍZKA':'VYSOKÁ'}</td><td>${Df<1.5?'Jednoduché línie pohybu.':'Komplexné taktické prekážky.'}</td></tr>
-                <tr><td>L</td><td class="fw-bold">${L<0.4?'OK':'Riziko'}</td><td>${L<0.4?'Homogénne pokrytie senzorov.':'Zhluky hluchých miest.'}</td></tr>
+                <tr><td>γ</td><td class="fw-bold">${G<0.4?dict[lang].tblG_ok:dict[lang].tblG_err}</td><td>${G<0.4?'Analytical confidence high.':'Significant epistemic void.'}</td></tr>
+                <tr><td>Df</td><td class="fw-bold">${Df<1.5?dict[lang].tblDf_ok:dict[lang].tblDf_err}</td><td>${Df<1.5?'Low path complexity.':'Tactical labyrinth detected.'}</td></tr>
+                <tr><td>L</td><td class="fw-bold">${L<0.4?dict[lang].tblL_ok:dict[lang].tblL_err}</td><td>${L<0.4?'Homogeneous sensor field.':'Major blind spot clustering.'}</td></tr>
             `;
         }
 
@@ -350,7 +358,7 @@
             calc();
         }
 
-        setLang('sk');
+        setLang('en');
     </script>
 </body>
 </html>
