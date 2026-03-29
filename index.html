@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAM Analytical Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background-color: #1a252f; color: white; }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.05); border: none; border-radius: 12px; margin-bottom: 20px; }
+        .card-header { background-color: #2c3e50; color: white; border-radius: 12px 12px 0 0 !important; font-weight: 600; }
+        .slider-box { padding: 10px 0; border-bottom: 1px solid #eee; }
+        .slider-box:last-child { border-bottom: none; }
+        .slider-label { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem; color: #34495e;}
+        .info-text { font-size: 0.8rem; color: #7f8c8d; margin-bottom: 5px; line-height: 1.2;}
+        .badge-value { font-size: 1rem; padding: 5px 10px; }
+        .result-display { background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); padding: 20px; border-radius: 12px; text-align: center; height: 100%;}
+        .risk-value { font-size: 3rem; font-weight: bold; color: #c0392b; margin: 0; }
+        .math-box { background-color: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.95rem; overflow-x: auto;}
+        .btn-lang { font-weight: bold; border: 2px solid white; color: white; }
+        .btn-lang:hover { background-color: white; color: #1a252f; }
+        .scenario-btn { margin-right: 10px; margin-bottom: 10px; font-weight: 500;}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <span style="color: #3498db;">FRAM</span> <span data-i18n="appTitle">Analytical Dashboard</span>
+            </a>
+            <div class="d-flex gap-3">
+                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#methodologyModal" data-i18n="btnMethodology">📖 Methodology</button>
+                <button class="btn btn-lang btn-sm" id="langToggle" onclick="toggleLanguage()">🇸🇰 SK</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card h-100">
+                    <div class="card-header bg-primary" data-i18n="mathModel">Mathematical Model</div>
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <div class="math-box text-center mb-2">
+                            R<sub>f</sub> = (P × D<sub>norm</sub>) × [ 1 + γ × ( w<sub>1</sub>(D<sub>f</sub> - 1) + w<sub>2</sub> × L<sub>norm</sub> ) ]
+                        </div>
+                        <div class="text-center text-muted" style="font-size: 0.9rem;" id="liveEquation">
+                            Live calculation updates here...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="result-display shadow-sm">
+                    <h5 class="text-muted fw-bold" data-i18n="totalRisk">Total Fractal Risk (Rf)</h5>
+                    <p class="risk-value" id="out_totalRisk">0.000</p>
+                    <span class="badge bg-danger mt-2" id="riskBadge" data-i18n="riskStatus">Calculating...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-5">
+                
+                <div class="card border-primary mb-4">
+                    <div class="card-header bg-primary text-white" data-i18n="panelScenarios">📝 Case Studies (Quick Load)</div>
+                    <div class="card-body">
+                        <button class="btn btn-outline-primary scenario-btn w-100 mb-2" onclick="loadScenario('water')" data-i18n="btnWater">💧 Closed CI (Water Utility)</button>
+                        <button class="btn btn-outline-danger scenario-btn w-100" onclick="loadScenario('campus')" data-i18n="btnCampus">🏫 Open Soft Target (Campus)</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" data-i18n="panelBase">1. Aleatoric Uncertainty (PPS Base Risk)</div>
+                    <div class="card-body">
+                        <div class="slider-box">
+                            <div class="slider-label"><span data-i18n="labelP">Probability of Success (P)</span> <span class="badge bg-secondary badge-value" id="val_P">0.50</span></div>
+                            <div class="info-text" data-i18n="descP">Probability that an adversary successfully defeats the physical protection system on a known path.</div>
+                            <input type="range" class="form-range" id="in_P" min="0" max="1" step="0.001" value="0.283" oninput="updateModel()">
+                        </div>
+                        <div class="slider-box mt-3">
+                            <div class="slider-label"><span data-i18n="labelD">Normalized Impact (D_norm)</span> <span class="badge bg-secondary badge-value" id="val_D">0.80</span></div>
+                            <div class="info-text" data-i18n="descD">Severity of the attack consequences normalized to a 0-1 scale.</div>
+                            <input type="range" class="form-range" id="in_D" min="0" max="1" step="0.01" value="0.95" oninput="updateModel()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" data-i18n="panelFractal">2. Epistemic Uncertainty (FRAM Modifiers)</div>
+                    <div class="card-body">
+                        <div class="slider-box">
+                            <div class="slider-label"><span data-i18n="labelGamma">Epistemic Uncertainty (γ)</span> <span class="badge bg-danger badge-value" id="val_G">0.80</span></div>
+                            <div class="info-text" data-i18n="descGamma">Proportion of the facility NOT analyzed. 0 = absolute certainty, 1 = extreme spatial blindness.</div>
+                            <input type="range" class="form-range" id="in_G" min="0" max="1" step="0.01" value="0.15" oninput="updateModel()">
+                        </div>
+                        <div class="slider-box mt-3">
+                            <div class="slider-label"><span data-i18n="labelDf">Fractal Dimension (Df)</span> <span class="badge bg-warning text-dark badge-value" id="val_Df">1.60</span></div>
+                            <div class="info-text" data-i18n="descDf">Complexity of barriers. 1.0 = Flat open space. 2.0 = Highly complex labyrinth.</div>
+                            <input type="range" class="form-range" id="in_Df" min="1" max="2" step="0.01" value="1.82" oninput="updateModel()">
+                        </div>
+                        <div class="slider-box mt-3">
+                            <div class="slider-label"><span data-i18n="labelL">Normalized Lacunarity (L_norm)</span> <span class="badge bg-warning text-dark badge-value" id="val_L">0.50</span></div>
+                            <div class="info-text" data-i18n="descL">Heterogeneity of sensor coverage. 0.0 = Perfect coverage. 1.0 = Massive clustered blind spots.</div>
+                            <input type="range" class="form-range" id="in_L" min="0" max="1" step="0.01" value="0.12" oninput="updateModel()">
+                        </div>
+                        <div class="slider-box mt-3">
+                            <div class="slider-label"><span data-i18n="labelW">Complexity Weight (w1)</span> <span class="badge bg-info text-dark badge-value" id="val_W">0.50</span></div>
+                            <div class="info-text" data-i18n="descW">Adjusts the asymmetrical advantage of barriers vs. blind spots. (w2 is auto-calculated).</div>
+                            <input type="range" class="form-range" id="in_W" min="0" max="1" step="0.01" value="0.80" oninput="updateModel()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark" data-i18n="chart1Title">Risk Decomposition (Stacked Base vs Spatial Penalty)</div>
+                    <div class="card-body">
+                        <canvas id="decompChart" height="120"></canvas>
+                        <p class="text-muted text-center mt-2 mb-0" style="font-size: 0.85rem;" data-i18n="chart1Desc">Shows how much of the total risk is caused by known paths vs unknown spatial complexity.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-dark" data-i18n="chart2Title">Sensitivity Analysis (Risk vs Epistemic Uncertainty γ)</div>
+                    <div class="card-body">
+                        <canvas id="sensChart" height="140"></canvas>
+                        <p class="text-muted text-center mt-2 mb-0" style="font-size: 0.85rem;" data-i18n="chart2Desc">Visualizes how the total risk would grow if the unanalyzed area of the facility increases.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="methodologyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" data-i18n="modalTitle">FRAM Methodology</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- SLOVNÍK PRE DVOJJAZYČNOSŤ ---
+        const dict = {
+            en: {
+                appTitle: "Analytical Dashboard",
+                btnMethodology: "📖 Methodology",
+                mathModel: "Mathematical Model & Live Equation",
+                totalRisk: "Total Fractal Risk (R_f)",
+                riskStatus: "Live Computation",
+                panelScenarios: "📝 Case Studies (Quick Load)",
+                btnWater: "💧 Closed CI (Water Utility)",
+                btnCampus: "🏫 Open Soft Target (Campus)",
+                panelBase: "1. Aleatoric Uncertainty (PPS Base Risk)",
+                labelP: "Probability of Success (P)",
+                descP: "Probability that an adversary successfully defeats the physical protection system on a known path.",
+                labelD: "Normalized Impact (D_norm)",
+                descD: "Severity of the attack consequences normalized to a 0-1 scale.",
+                panelFractal: "2. Epistemic Uncertainty (FRAM Spatial Modifiers)",
+                labelGamma: "Epistemic Uncertainty Coefficient (γ)",
+                descGamma: "Proportion of the facility NOT analyzed. 0 = absolute certainty, 1 = extreme spatial blindness.",
+                labelDf: "Fractal Dimension (D_f)",
+                descDf: "Complexity of barriers. 1.0 = Flat open space. 2.0 = Highly complex labyrinth causing spatial chaos.",
+                labelL: "Normalized Lacunarity (L_norm)",
+                descL: "Heterogeneity of sensor coverage. 0.0 = Perfect coverage. 1.0 = Massive clustered blind spots.",
+                labelW: "Complexity Weight (w1)",
+                descW: "Adjusts the asymmetrical advantage of barriers vs. blind spots. (w2 is auto-calculated).",
+                chart1Title: "Risk Decomposition (Base vs Spatial Penalties)",
+                chart1Desc: "Shows exactly how much of the total risk is generated by spatial anomalies compared to the base scenario.",
+                chart2Title: "Sensitivity Analysis (Risk vs Epistemic Uncertainty γ)",
+                chart2Desc: "Visualizes the growth curve of Total Risk as the unanalyzed area (Gamma) increases.",
+                modalTitle: "FRAM Methodology & Parameters",
+                modalBody: `<h6>The Core Problem</h6><p>Traditional Physical Protection Systems (PPS) calculate risk only for a limited number of predefined adversary paths. If an adversary deviates, the linear models fail because they ignore the spatial reality.</p><hr><h6>The Solution: FRAM Equation</h6><p>FRAM introduces a corrected additive-multiplicative formula explicitly eliminating double-counting (multicollinearity) through the Gamma coefficient.</p>`
+            },
+            sk: {
+                appTitle: "Analytický Riadiaci Panel",
+                btnMethodology: "📖 Metodológia",
+                mathModel: "Matematický model a živý výpočet",
+                totalRisk: "Celkové Fraktálne Riziko (R_f)",
+                riskStatus: "Aktívny výpočet",
+                panelScenarios: "📝 Prípadové štúdie (Rýchle načítanie)",
+                btnWater: "💧 Uzavretý objekt KI (Vodáreň)",
+                btnCampus: "🏫 Otvorený mäkký cieľ (Kampus)",
+                panelBase: "1. Aleatorická neistota (Bázické riziko)",
+                labelP: "Pravdepodobnosť úspechu (P)",
+                descP: "Pravdepodobnosť, že útočník prekoná systém fyzickej ochrany na známej trase.",
+                labelD: "Normalizovaný dopad (D_norm)",
+                descD: "Závažnosť následkov útoku normalizovaná do intervalu <0, 1>.",
+                panelFractal: "2. Epistemická neistota (Modifikátory FRAM)",
+                labelGamma: "Koeficient epistemickej neistoty (γ)",
+                descGamma: "Podiel objektu, ktorý NEBOL analyzovaný. 0 = absolútna istota, 1 = extrémna priestorová slepota.",
+                labelDf: "Fraktálna dimenzia (D_f)",
+                descDf: "Zložitosť bariér. 1.0 = Prázdna plocha. 2.0 = Extrémny labyrint spôsobujúci priestorový chaos.",
+                labelL: "Normalizovaná Lakunarita (L_norm)",
+                descL: "Heterogenita senzorového pokrytia. 0.0 = Dokonalé pokrytie. 1.0 = Masívne zhluknuté slepé uhly.",
+                labelW: "Váha zložitosti (w1)",
+                descW: "Upravuje asymetrickú výhodu zložitosti bariér voči slepým uhlom. (w2 je dopočítané).",
+                chart1Title: "Rozklad rizika (Bázické riziko vs. Priestorová penalizácia)",
+                chart1Desc: "Presne ukazuje, aká časť z celkového rizika je generovaná priestorovými anomáliami.",
+                chart2Title: "Analýza citlivosti (Riziko vs Epistemická neistota γ)",
+                chart2Desc: "Vizualizuje krivku rastu celkového rizika v závislosti od toho, aká časť budovy zostáva nepreskúmaná.",
+                modalTitle: "Metodológia FRAM a parametre",
+                modalBody: `<h6>Hlavný problém</h6><p>Tradičné modely (PPS) počítajú riziko len pre obmedzený počet vopred definovaných trás útočníka. Ak útočník trasu zmení, lineárne modely zlyhávajú.</p><hr><h6>Riešenie: Rovnica FRAM</h6><p>FRAM zavádza korigovanú rovnicu, ktorá prepája klasickú pravdepodobnosť s fraktálnou geometriou. Vďaka koeficientu Gama exaktne eliminuje problém dvojitého započítania.</p>`
+            }
+        };
+
+        let currentLang = 'en';
+
+        // --- INICIALIZÁCIA GRAFOV ---
+        const ctxDecomp = document.getElementById('decompChart').getContext('2d');
+        let decompChart = new Chart(ctxDecomp, {
+            type: 'bar',
+            data: {
+                labels: ['Risk Components'],
+                datasets: [
+                    { label: 'Base Risk (P × D)', data: [0], backgroundColor: '#34495e' },
+                    { label: 'Complexity Penalty (Df)', data: [0], backgroundColor: '#e67e22' },
+                    { label: 'Blind Spot Penalty (L)', data: [0], backgroundColor: '#e74c3c' }
+                ]
+            },
+            options: { indexAxis: 'y', responsive: true, scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true, display: false } }, plugins: { legend: { position: 'top' } } }
+        });
+
+        const ctxSens = document.getElementById('sensChart').getContext('2d');
+        let sensChart = new Chart(ctxSens, {
+            type: 'line',
+            data: {
+                labels: ['0.0', '0.2', '0.4', '0.6', '0.8', '1.0'],
+                datasets: [
+                    { label: 'Total Risk Curve', data: [], borderColor: '#2980b9', backgroundColor: 'rgba(41, 128, 185, 0.2)', borderWidth: 3, fill: true, tension: 0.3 },
+                    { label: 'Current Setup', data: [], backgroundColor: '#c0392b', borderColor: '#c0392b', pointRadius: 6, type: 'scatter' }
+                ]
+            },
+            options: { responsive: true, scales: { x: { title: { display: true, text: 'Epistemic Uncertainty (Gamma)' } }, y: { title: { display: true, text: 'Total Risk (Rf)' }, beginAtZero: true, max: 1.5 } }, plugins: { legend: { display: false } } }
+        });
+
+        // --- NAČÍTANIE SCENÁROV ---
+        function loadScenario(type) {
+            if(type === 'water') {
+                document.getElementById('in_P').value = 0.283;
+                document.getElementById('in_D').value = 0.95;
+                document.getElementById('in_G').value = 0.15;
+                document.getElementById('in_Df').value = 1.82;
+                document.getElementById('in_L').value = 0.12;
+                document.getElementById('in_W').value = 0.80;
+            } else if (type === 'campus') {
+                document.getElementById('in_P').value = 0.850;
+                document.getElementById('in_D').value = 0.85;
+                document.getElementById('in_G').value = 0.95;
+                document.getElementById('in_Df').value = 1.34;
+                document.getElementById('in_L').value = 0.78;
+                document.getElementById('in_W').value = 0.40;
+            }
+            updateModel();
+        }
+
+        // --- HLAVNÁ MATEMATICKÁ FUNKCIA ---
+        function updateModel() {
+            const P = parseFloat(document.getElementById('in_P').value);
+            const D = parseFloat(document.getElementById('in_D').value);
+            const G = parseFloat(document.getElementById('in_G').value);
+            const Df = parseFloat(document.getElementById('in_Df').value);
+            const L = parseFloat(document.getElementById('in_L').value);
+            const w1 = parseFloat(document.getElementById('in_W').value);
+            const w2 = 1 - w1;
+
+            document.getElementById('val_P').innerText = P.toFixed(3);
+            document.getElementById('val_D').innerText = D.toFixed(2);
+            document.getElementById('val_G').innerText = G.toFixed(2);
+            document.getElementById('val_Df').innerText = Df.toFixed(2);
+            document.getElementById('val_L').innerText = L.toFixed(2);
+            document.getElementById('val_W').innerText = w1.toFixed(2) + " (w2: " + w2.toFixed(2) + ")";
+
+            const baseRisk = P * D;
+            const complexityPenalty = baseRisk * G * (w1 * (Df - 1));
+            const lacunarityPenalty = baseRisk * G * (w2 * L);
+            const totalRisk = baseRisk + complexityPenalty + lacunarityPenalty;
+            const modifier = 1 + G * (w1 * (Df - 1) + w2 * L);
+
+            document.getElementById('out_totalRisk').innerText = totalRisk.toFixed(3);
+            
+            // Dynamický odznak rizika
+            let badge = document.getElementById('riskBadge');
+            if(totalRisk < 0.3) { badge.className = "badge bg-success mt-2"; badge.innerText = currentLang==='en'?"Low Risk":"Nízke riziko"; }
+            else if(totalRisk < 0.8) { badge.className = "badge bg-warning text-dark mt-2"; badge.innerText = currentLang==='en'?"Medium Risk":"Stredné riziko"; }
+            else { badge.className = "badge bg-danger mt-2"; badge.innerText = currentLang==='en'?"Critical Risk":"Kritické riziko"; }
+
+            document.getElementById('liveEquation').innerHTML = 
+                `<strong>Rf = (${P.toFixed(3)} × ${D.toFixed(2)}) × [ 1 + ${G.toFixed(2)} × ( ${w1.toFixed(2)}(${Df.toFixed(2)} - 1) + ${w2.toFixed(2)} × ${L.toFixed(2)} ) ] <br> Base: ${baseRisk.toFixed(3)} | FRAM Mod: ${modifier.toFixed(3)} | <span style="color:#e74c3c;">Total: ${totalRisk.toFixed(3)}</span></strong>`;
+
+            decompChart.data.datasets[0].data = [baseRisk];
+            decompChart.data.datasets[1].data = [complexityPenalty];
+            decompChart.data.datasets[2].data = [lacunarityPenalty];
+            decompChart.update();
+
+            let curveData = [];
+            for(let testG = 0; testG <= 1.05; testG += 0.2) {
+                curveData.push(baseRisk * (1 + testG * (w1 * (Df - 1) + w2 * L)));
+            }
+            sensChart.data.datasets[0].data = curveData;
+            sensChart.data.datasets[1].data = [{x: G, y: totalRisk}];
+            sensChart.update();
+        }
+
+        // --- PREPÍNANIE JAZYKOV ---
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'sk' : 'en';
+            document.getElementById('langToggle').innerText = currentLang === 'en' ? '🇸🇰 SK' : '🇬🇧 EN';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[currentLang][key]) el.innerHTML = dict[currentLang][key];
+            });
+            document.getElementById('modalContent').innerHTML = dict[currentLang].modalBody;
+
+            if (currentLang === 'sk') {
+                decompChart.data.datasets[0].label = 'Bázické riziko (P × D)';
+                decompChart.data.datasets[1].label = 'Penalizácia za zložitosť (Df)';
+                decompChart.data.datasets[2].label = 'Penalizácia za slepé uhly (L)';
+                sensChart.options.scales.x.title.text = 'Epistemická neistota (Gamma)';
+                sensChart.options.scales.y.title.text = 'Celkové riziko (Rf)';
+            } else {
+                decompChart.data.datasets[0].label = 'Base Risk (P × D)';
+                decompChart.data.datasets[1].label = 'Complexity Penalty (Df)';
+                decompChart.data.datasets[2].label = 'Blind Spot Penalty (L)';
+                sensChart.options.scales.x.title.text = 'Epistemic Uncertainty (Gamma)';
+                sensChart.options.scales.y.title.text = 'Total Risk (Rf)';
+            }
+            decompChart.update();
+            sensChart.update();
+            updateModel(); // Pre refresh dynamického textu
+        }
+
+        // Init
+        document.getElementById('modalContent').innerHTML = dict['en'].modalBody;
+        loadScenario('water'); // Defaultne načítame Vodáreň!
+    </script>
+</body>
+</html>
