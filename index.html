@@ -3,77 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRAM Analytical Platform | University of Žilina</title>
+    <title>FRAM Platform | University of Žilina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #007bff; /* Vedecká modrá */
-            --primary-dark: #0056b3;
-            --bg-dark: #121212; /* "Noc" pozadie */
-            --bg-card: #1e1e1e; /* Karty */
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --border: #333333;
-            --risk-low: #2ecc71;
-            --risk-med: #f1c40f;
-            --risk-high: #e74c3c;
+            --primary: #3498db;
+            --accent: #e74c3c;
+            --bg-body: #0f1113;
+            --bg-card: #1a1d21;
+            --text-bright: #f8f9fa;
+            --text-dim: #adb5bd;
+            --border-color: #2d3238;
         }
 
-        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding-top: 70px; scroll-behavior: smooth; }
-        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-bright); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            scroll-padding-top: 100px;
+        }
+
         /* Navbar */
-        .navbar { background-color: rgba(18, 18, 18, 0.95) !important; border-bottom: 2px solid var(--primary); backdrop-filter: blur(5px); }
-        .navbar-brand { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .nav-link { font-weight: 500; color: var(--text-main) !important; transition: 0.3s; margin: 0 5px; border-radius: 5px;}
-        .nav-link:hover { background-color: rgba(0, 123, 255, 0.1); color: var(--primary) !important; }
-        
-        /* Karty a panely */
-        .card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; transition: 0.3s ease-in-out; }
-        .card:hover { border-color: var(--primary); box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1); }
-        .card-header { background-color: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--border); color: white; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; padding: 15px 20px; }
-        
-        /* Vzorec a Výsledok */
-        .math-box { background-color: rgba(255, 255, 255, 0.95); color: #121212; padding: 25px; border-radius: 8px; font-family: 'Cambria Math', 'serif'; font-size: 1.6rem; border-left: 8px solid var(--primary); box-shadow: inset 0 0 15px rgba(0,0,0,0.1); overflow-x: auto; text-align: center; }
-        .math-variable { font-weight: bold; color: #c0392b; }
-        .result-display { background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%); color: white; padding: 25px; border-radius: 10px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; border: 2px solid var(--border); position: relative;}
-        .risk-value { font-size: 4rem; font-weight: 900; color: var(--risk-high); margin: 0; line-height: 1; text-shadow: 0 0 15px rgba(231, 76, 60, 0.3); }
-        .risk-meter { height: 10px; background-color: #333; border-radius: 5px; margin-top: 15px; overflow: hidden; }
-        .risk-meter-bar { height: 100%; background-color: var(--risk-low); width: 0%; transition: 0.5s; }
+        .navbar { 
+            background-color: rgba(15, 17, 19, 0.95) !important; 
+            border-bottom: 2px solid var(--primary);
+            backdrop-filter: blur(10px);
+        }
+        .nav-link { color: var(--text-dim) !important; font-weight: 500; margin: 0 10px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 
-        /* Posuvníky a Labely */
-        .slider-box { padding: 15px 0; border-bottom: 1px solid var(--border); }
-        .slider-box:last-child { border-bottom: none; }
-        .slider-label { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.95rem; color: #bdc3c7; margin-bottom: 8px; }
-        .info-icon { cursor: help; color: var(--primary); margin-left: 8px; transition: 0.2s; }
-        .info-icon:hover { transform: scale(1.3); color: #5dade2; }
-        .badge-value { font-size: 1rem; padding: 7px 12px; min-width: 70px; text-align: center; background-color: #121212; border: 1px solid var(--border); color: white; font-family: monospace; }
-        .form-range::-webkit-slider-thumb { background: var(--primary); height: 20px; width: 20px; margin-top: -6px;}
-        .form-range::-webkit-slider-runnable-track { background: #333; height: 8px; border-radius: 4px;}
+        /* Karty */
+        .card { 
+            background-color: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        .card-header { 
+            background-color: rgba(255,255,255,0.03); 
+            color: var(--primary); 
+            font-weight: 700; 
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+        }
 
+        /* Matematický box */
+        .math-container {
+            background: #fff;
+            color: #111;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-family: "Times New Roman", Times, serif;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+        .math-icon { font-size: 0.9rem; color: var(--primary); cursor: help; vertical-align: super; margin-left: 2px; }
+
+        /* Výsledok */
+        .risk-display {
+            background: linear-gradient(145deg, #1e2227, #14171a);
+            border: 2px solid var(--border-color);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .risk-value { font-size: 4.5rem; font-weight: 900; color: var(--accent); line-height: 1; text-shadow: 0 0 20px rgba(231, 76, 60, 0.4); }
+
+        /* Slidery */
+        .slider-label { display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); font-weight: 600; margin-bottom: 8px; }
+        .badge-val { background: var(--bg-body); color: var(--primary); border: 1px solid var(--primary); font-family: monospace; font-size: 1rem; padding: 5px 10px; }
+        
         /* Tabuľky */
-        .table-uniza { color: var(--text-main); font-size: 0.9rem; margin-bottom: 0; }
-        .table-uniza thead th { background-color: rgba(255, 255, 255, 0.05); color: white; border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        .table-uniza td, .table-uniza th { border-color: var(--border); padding: 12px; }
-        .table-uniza tbody tr:hover { background-color: rgba(255, 255, 255, 0.02); }
+        .table { color: var(--text-dim); border-color: var(--border-color); }
+        .table thead th { color: var(--text-bright); border-bottom: 2px solid var(--primary); }
+        .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(255,255,255,0.02); }
 
         /* Footer */
-        footer { background-color: var(--bg-card); border-top: 2px solid var(--primary); color: var(--text-muted); padding: 40px 0; margin-top: 50px; font-size: 0.9rem;}
-        footer a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        footer a:hover { color: #5dade2; text-decoration: underline; }
-        .footer-logo { max-height: 50px; margin-bottom: 15px; opacity: 0.7; transition: 0.3s;}
-        .footer-logo:hover { opacity: 1; }
-        .orcid-icon { color: #a6ce39; margin-right: 5px; }
+        footer { background-color: #08090a; padding: 60px 0; border-top: 1px solid var(--border-color); color: var(--text-dim); }
+        .footer-logo { max-height: 60px; filter: grayscale(1) invert(1); opacity: 0.8; transition: 0.3s; }
+        .footer-logo:hover { filter: none; opacity: 1; }
 
-        /* Sekcie pre menu */
-        section { padding-top: 30px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 30px;}
-        section:last-child { border-bottom: none; }
-        .section-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: white; margin-bottom: 25px; border-left: 5px solid var(--primary); padding-left: 15px;}
-        
-        /* Jazykový prepínač */
-        .btn-lang { font-weight: bold; border: 2px solid white; color: white; border-radius: 20px; padding: 5px 15px; background: transparent; }
-        .btn-lang:hover, .btn-lang.active { background-color: white; color: var(--bg-dark); }
+        /* Kotvy */
+        .section-anchor { padding-top: 20px; margin-bottom: 40px; border-left: 5px solid var(--primary); padding-left: 20px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Tooltip style */
+        .tooltip-inner { background-color: var(--primary) !important; color: white !important; font-size: 0.9rem; padding: 10px; }
     </style>
 </head>
 <body>
@@ -81,93 +104,87 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#"><span style="color:var(--primary)">FRAM</span> Platform</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#calculator"><i class="fas fa-calculator me-1"></i> <span data-i18n="menuCalc">Calculator</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#theory"><i class="fas fa-book-open me-1"></i> <span data-i18n="menuTheory">Theory</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#methodology"><i class="fas fa-flask me-1"></i> <span data-i18n="menuMethod">Methodology</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact"><i class="fas fa-envelope me-1"></i> <span data-i18n="menuContact">Contact</span></a></li>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="#dashboard"><i class="fas fa-gauge-high me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#methodology"><i class="fas fa-book me-1"></i> Methodology</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact"><i class="fas fa-user me-1"></i> Author</a></li>
                 </ul>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-lang btn-sm active" id="langEN" onclick="setLanguage('en')">EN</button>
-                    <button class="btn btn-lang btn-sm" id="langSK" onclick="setLanguage('sk')">SK</button>
+                <div class="d-flex">
+                    <button class="btn btn-outline-primary btn-sm me-2" onclick="setLang('en')">EN</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="setLang('sk')">SK</button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        
-        <section id="calculator">
-            <h2 class="section-title" data-i18n="sectionCalc">FRAM Analytical Dashboard</h2>
+    <div class="container" style="margin-top: 40px;">
+
+        <section id="dashboard">
+            <h2 class="section-anchor" data-i18n="headDash">Analytical Risk Dashboard</h2>
             
-            <div class="row mb-4">
+            <div class="row">
                 <div class="col-lg-8">
                     <div class="card h-100">
-                        <div class="card-header" data-i18n="mathModel">Scientific Mathematical Model</div>
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <div class="math-box mb-3">
-                                R<sub>f</sub> = (P * I<sub>norm</sub>) * [ 1 + γ * ( w<sub>1</sub>(D<sub>f</sub> - 1) + w<sub>2</sub> * L<sub>norm</sub> ) ]
+                        <div class="card-header" data-i18n="headMath">Theoretical Model Formalization</div>
+                        <div class="card-body">
+                            <div class="math-container shadow">
+                                R<sub>f</sub> = (P<span class="math-icon" title="Probability of Path Success">ⓘ</span> * I<sub>norm</sub><span class="math-icon" title="Normalized Impact">ⓘ</span>) * [ 1 + γ<span class="math-icon" title="Epistemic Uncertainty">ⓘ</span> * ( w<sub>1</sub><span class="math-icon" title="Weight Complexity">ⓘ</span>(D<sub>f</sub> - 1)<span class="math-icon" title="Fractal Dimension">ⓘ</span> + w<sub>2</sub> * L<sub>norm</sub><span class="math-icon" title="Normalized Lacunarity">ⓘ</span> ) ]
                             </div>
-                            <div class="text-center text-muted fw-bold" style="font-size: 1.1rem; font-family: monospace;" id="liveEquation">Live computing...</div>
+                            <div id="liveFormula" class="text-center fw-bold text-primary mt-3" style="font-family: monospace; font-size: 1.1rem;"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="result-display shadow">
-                        <h5 class="fw-bold mb-3 text-uppercase" style="color: #bdc3c7;" data-i18n="totalRisk">Total Fractal Risk (R_f)</h5>
-                        <p class="risk-value" id="out_totalRisk">0.000</p>
-                        <div class="risk-meter"><div class="risk-meter-bar" id="riskMeterBar"></div></div>
-                        <div><span class="badge mt-3 px-4 py-2" style="font-size: 1rem; border-radius: 30px;" id="riskBadge">Calculating...</span></div>
+                    <div class="risk-display h-100 shadow">
+                        <h6 class="text-uppercase text-dim mb-3" data-i18n="resTitle">Total Fractal Risk (R<sub>f</sub>)</h6>
+                        <div class="risk-value" id="rfOut">0.000</div>
+                        <div id="riskLevel" class="badge bg-danger mt-4 px-4 py-2" style="font-size: 1rem;">CRITICAL</div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-lg-5">
-                    <div class="card border-primary mb-4">
-                        <div class="card-header bg-primary text-white" data-i18n="panelScenarios">📝 Research Case Studies</div>
-                        <div class="card-body row gx-2">
-                            <div class="col-6"><button class="btn btn-outline-primary scenario-btn w-100" onclick="loadScenario('water')" data-i18n="btnWater">💧 Water Utility</button></div>
-                            <div class="col-6"><button class="btn btn-outline-danger scenario-btn w-100" onclick="loadScenario('campus')" data-i18n="btnCampus">🏫 Campus Target</button></div>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-header" data-i18n="panelBase">1. Aleatoric Uncertainty (PPS Base Risk)</div>
-                        <div class="card-body p-0">
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelP">Probability (P)</span> <span class="info-icon" id="tt-P" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-dark badge-value" id="val_P">0.283</span></div>
-                                <input type="range" class="form-range mt-2" id="in_P" min="0" max="1" step="0.001" value="0.283" oninput="updateModel()">
-                            </div>
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelI">Impact (I_norm)</span> <span class="info-icon" id="tt-I" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-dark badge-value" id="val_I">0.95</span></div>
-                                <input type="range" class="form-range mt-2" id="in_I" min="0" max="1" step="0.01" value="0.95" oninput="updateModel()">
+                    <div class="card">
+                        <div class="card-header" data-i18n="headScen">Quick Scenario Load</div>
+                        <div class="card-body">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary w-100 btn-sm" onclick="loadScen('water')">💧 Water Utility</button>
+                                <button class="btn btn-outline-danger w-100 btn-sm" onclick="loadScen('campus')">🏫 Campus Target</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header" data-i18n="panelFractal">2. Epistemic Uncertainty (FRAM Modifiers)</div>
-                        <div class="card-body p-0">
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelGamma">Epistemic Uncertainty (γ)</span> <span class="info-icon" id="tt-G" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-danger badge-value" id="val_G">0.15</span></div>
-                                <input type="range" class="form-range mt-2" id="in_G" min="0" max="1" step="0.01" value="0.15" oninput="updateModel()">
+                        <div class="card-header" data-i18n="headParams">Input Variables Control</div>
+                        <div class="card-body">
+                            <div class="slider-box">
+                                <div class="slider-label"><span>P (Probability)</span> <span class="badge-val" id="valP">0.283</span></div>
+                                <input type="range" class="form-range" id="inP" min="0" max="1" step="0.001" value="0.283" oninput="calc()">
                             </div>
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelDf">Fractal Dim. (D_f)</span> <span class="info-icon" id="tt-Df" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-warning text-dark badge-value" id="val_Df">1.82</span></div>
-                                <input type="range" class="form-range mt-2" id="in_Df" min="1" max="2" step="0.01" value="1.82" oninput="updateModel()">
+                            <div class="slider-box">
+                                <div class="slider-label"><span>I (Impact)</span> <span class="badge-val" id="valI">0.95</span></div>
+                                <input type="range" class="form-range" id="inI" min="0" max="1" step="0.01" value="0.95" oninput="calc()">
                             </div>
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelL">Lacunarity (L_norm)</span> <span class="info-icon" id="tt-L" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-warning text-dark badge-value" id="val_L">0.12</span></div>
-                                <input type="range" class="form-range mt-2" id="in_L" min="0" max="1" step="0.01" value="0.12" oninput="updateModel()">
+                            <div class="slider-box">
+                                <div class="slider-label"><span>γ (Epistemic Void)</span> <span class="badge-val" id="valG">0.15</span></div>
+                                <input type="range" class="form-range" id="inG" min="0" max="1" step="0.01" value="0.15" oninput="calc()">
                             </div>
-                            <div class="px-4 slider-box">
-                                <div class="slider-label"><span><span data-i18n="labelW">Weight (w1)</span> <span class="info-icon" id="tt-W" data-bs-toggle="tooltip" data-bs-html="true">ⓘ</span></span><span class="badge bg-info text-dark badge-value" id="val_W">0.80</span></div>
-                                <input type="range" class="form-range mt-2" id="in_W" min="0" max="1" step="0.01" value="0.80" oninput="updateModel()">
+                            <div class="slider-box">
+                                <div class="slider-label"><span>D<sub>f</sub> (Complexity)</span> <span class="badge-val" id="valDf">1.82</span></div>
+                                <input type="range" class="form-range" id="inDf" min="1" max="2" step="0.01" value="1.82" oninput="calc()">
+                            </div>
+                            <div class="slider-box">
+                                <div class="slider-label"><span>L<sub>norm</sub> (Gaps)</span> <span class="badge-val" id="valL">0.12</span></div>
+                                <input type="range" class="form-range" id="inL" min="0" max="1" step="0.01" value="0.12" oninput="calc()">
+                            </div>
+                            <div class="slider-box">
+                                <div class="slider-label"><span>w<sub>1</sub> (Weight)</span> <span class="badge-val" id="valW">0.80</span></div>
+                                <input type="range" class="form-range" id="inW" min="0" max="1" step="0.01" value="0.80" oninput="calc()">
                             </div>
                         </div>
                     </div>
@@ -175,25 +192,29 @@
 
                 <div class="col-lg-7">
                     <div class="row">
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartDecompTitle">Risk Decomposition</div><div class="card-body"><canvas id="decompChart" height="150"></canvas></div></div></div>
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartRadarTitle">Vulnerability Radar</div><div class="card-body"><canvas id="radarChart" height="150"></canvas></div></div></div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">Vulnerability Breakdown</div>
+                                <div class="card-body"><canvas id="chartBar"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">Risk Profiling (Radar)</div>
+                                <div class="card-body"><canvas id="chartRadar"></canvas></div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartSensTitle">Sensitivity (Risk vs γ)</div><div class="card-body"><canvas id="sensChart" height="150"></canvas></div></div></div>
-                        <div class="col-md-6 mb-4"><div class="card h-100"><div class="card-header text-center" data-i18n="chartSurfTitle">3D Heatmap (Risk, γ, Df)</div><div class="card-body"><canvas id="surfaceChart" height="150"></canvas></div></div></div>
+                    <div class="card mb-4">
+                        <div class="card-header">Sensitivity Heatmap (Risk vs γ & Df)</div>
+                        <div class="card-body"><canvas id="chartBubble" height="120"></canvas></div>
                     </div>
-
                     <div class="card">
-                        <div class="card-header bg-dark text-white" data-i18n="tableLiveTitle">Live Scientific Interpretation</div>
+                        <div class="card-header">Dynamic Interpretation</div>
                         <div class="card-body p-0">
-                            <table class="table table-uniza table-striped mb-0">
-                                <thead><tr><th data-i18n="thParam">Variable</th><th data-i18n="thValue">Value</th><th data-i18n="thInterpretation">Scientific Interpretation</th></tr></thead>
-                                <tbody>
-                                    <tr><td><strong>γ</strong> <span data-i18n="nameG">(Uncertainty)</span></td><td id="tbl_G_val" class="fw-bold">...</td><td id="tbl_G_text">...</td></tr>
-                                    <tr><td><strong>D_f</strong> <span data-i18n="nameDf">(Complexity)</span></td><td id="tbl_Df_val" class="fw-bold">...</td><td id="tbl_Df_text">...</td></tr>
-                                    <tr><td><strong>L_norm</strong> <span data-i18n="nameL">(Sensor Gaps)</span></td><td id="tbl_L_val" class="fw-bold">...</td><td id="tbl_L_text">...</td></tr>
-                                </tbody>
+                            <table class="table table-striped mb-0">
+                                <thead><tr><th data-i18n="thVar">Var</th><th data-i18n="thStat">Status</th><th data-i18n="thMeaning">Interpretation</th></tr></thead>
+                                <tbody id="tableBody"></tbody>
                             </table>
                         </div>
                     </div>
@@ -201,60 +222,40 @@
             </div>
         </section>
 
-        <section id="theory">
-            <h2 class="section-title" data-i18n="sectionTheory">Theotetical Framework</h2>
+        <section id="methodology">
+            <h2 class="section-anchor" data-i18n="headMeth">Extended Methodology</h2>
+            
             <div class="row">
-                <div class="col-md-6">
-                    <h4 data-i18n="theoryProbTitle">Aleatoric Uncertainty vs. Epistemic Void</h4>
-                    <p data-i18n="theoryProbDesc">Traditional Physical Protection Systems (PPS) like EASI calculate aleatoric uncertainty on known adversary paths. FRAM addresses epistemic uncertainty—the risk of unanalyzed spaces.</p>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">Why Normalization?</div>
+                        <div class="card-body text-dim">
+                            <p data-i18n="methNorm">To ensure mathematical stability and avoid "Double Counting" (multicollinearity), all spatial inputs are normalized to the [0, 1] interval. This ensures that the base PPS risk (Aleatoric) remains primary, while fractal penalties (Epistemic) act as scientific modifiers.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <h4 data-i18n="theoryFractalTitle">Why Fractal Geometry?</h4>
-                    <p data-i18n="theoryFractalDesc">Facilities are not Euclidean; they are chaotic. Fractal dimension measures the roughness that hinders responses, and lacunarity measures the texture of sensor blind spots.</p>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">Box-Counting & Gliding-Box</div>
+                        <div class="card-body text-dim">
+                            <p data-i18n="methAlgo">Traditional models treat space as Euclidean. FRAM uses **Box-Counting** to measure fractal dimension (D<sub>f</sub>), quantifying the architectural chaos. **Gliding-Box** is used for Lacunarity (L), quantifying the "texture" of sensor blind spots.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section id="methodology">
-            <h2 class="section-title" data-i18n="sectionMethod">Hĺbková Metodológia a Tabuľky hodnôt</h2>
-            
-            <div class="card mb-4">
-                <div class="card-header" data-i18n="methVarTitle">Detailed Parameter Classification & Scientific Range</div>
+            <div class="card">
+                <div class="card-header">Parameter Definition Table</div>
                 <div class="card-body p-0">
-                    <table class="table table-uniza table-striped mb-0">
+                    <table class="table table-uniza mb-0">
                         <thead>
-                            <tr>
-                                <th>Param.</th>
-                                <th data-i18n="thDescription">Description & Methodology</th>
-                                <th data-i18n="thRange">Range</th>
-                                <th data-i18n="thImpact">Impact on Total Risk (Rf)</th>
-                            </tr>
+                            <tr><th>Symbol</th><th data-i18n="thDesc">Methodology & Logic</th><th>Range</th></tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong>γ</strong></td>
-                                <td data-i18n="rowDescG">Epistemic Uncertainty. Proportion of non-analyzed paths. Determined by facility scale.</td>
-                                <td>[0, 1]</td>
-                                <td data-i18n="rowImpG">Multiplier of spatial penalties.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>D_f</strong></td>
-                                <td data-i18n="rowDescDf">Fractal Dimension of barriers. Extracted via Box-Counting on CAD/GIS floorplans.</td>
-                                <td>[1.0, 2.0]</td>
-                                <td data-i18n="rowImpDf">High values cause high delay/chaos for response.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>L<sub>norm</sub></strong></td>
-                                <td data-i18n="rowDescL">Normalized Lacunarity of sensor coverage. Extracted via Gliding-Box.</td>
-                                <td>[0.0, 1.0]</td>
-                                <td data-i18n="rowImpL">High values mean clustered blind spots (safe attacker transit).</td>
-                            </tr>
-                            <tr>
-                                <td><strong>w<sub>1</sub></strong></td>
-                                <td data-i18n="rowDescW">Calibration weight (relative importance of barriers vs sensors). Set by AHP method.</td>
-                                <td>[0, 1]</td>
-                                <td data-i18n="rowImpW">Higher w1 means bariers are more critical than sensors.</td>
-                            </tr>
+                            <tr><td>γ</td><td data-i18n="tdG">Epistemic Uncertainty. Proportion of the facility not analyzed by path models. Bridge between PPS and FRAM.</td><td>[0, 1]</td></tr>
+                            <tr><td>D<sub>f</sub></td><td data-i18n="tdDf">Fractal Dimension. Complexity of physical barriers. D<sub>f</sub>=1 (linear/flat), D<sub>f</sub>=2 (maximum tactical chaos).</td><td>[1, 2]</td></tr>
+                            <tr><td>L<sub>norm</sub></td><td data-i18n="tdL">Lacunarity. Distribution of sensor gaps. High L means sensors are clustered, leaving massive safe zones for attackers.</td><td>[0, 1]</td></tr>
+                            <tr><td>w<sub>1,2</sub></td><td data-i18n="tdW">Calibrated weights. Determined by expert AHP method to balance the impact of barriers vs. sensors.</td><td>[0, 1]</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -262,293 +263,153 @@
         </section>
 
         <section id="contact">
-            <h2 class="section-title" data-i18n="menuContact">Contact & Researcher Profile</h2>
-            <div class="row align-items-center">
-                <div class="col-md-2 text-center">
-                    <i class="fas fa-user-circle fa-5x text-muted"></i>
-                </div>
-                <div class="col-md-10">
-                    <h4>Ing. Ladislav Mariš, PhD.</h4>
-                    <p class="mb-1 text-muted">Faculty of Security Engineering (FBI) | Žilina University in Žilina (UNIZA)</p>
-                    <p class="mb-3">Specialist in physical security modeling, critical infrastructure resilience, and applied fractal geometry in risk assessment.</p>
-                    <div class="d-flex gap-3">
-                        <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-light btn-sm"><i class="fab fa-orcid orcid-icon"></i> ORCID</a>
-                        <a href="https://ladislavmaris.github.io/" target="_blank" class="btn btn-dark btn-sm"><i class="fab fa-github"></i> Github Pages</a>
-                        <a href="mailto:ladislav.maris@fbi.uniza.sk" class="btn btn-primary btn-sm"><i class="fas fa-envelope"></i> E-mail</a>
+            <h2 class="section-anchor">Researcher Information</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center mb-3">
+                            <i class="fas fa-user-graduate fa-6x text-primary"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="fw-bold">Ing. Ladislav Mariš, PhD.</h3>
+                            <p class="text-primary fw-bold">Faculty of Security Engineering | University of Žilina</p>
+                            <p class="text-dim">Focus: Critical Infrastructure Protection, Fractal Geometry in Security, Advanced Risk Modeling.</p>
+                            <div class="d-flex gap-3 flex-wrap mt-4">
+                                <a href="mailto:ladislav.maris@uniza.sk" class="btn btn-outline-primary"><i class="fas fa-envelope me-1"></i> ladislav.maris@uniza.sk</a>
+                                <a href="https://orcid.org/0000-0003-4952-9055" target="_blank" class="btn btn-outline-success"><i class="fab fa-orcid me-1"></i> ORCID</a>
+                                <a href="https://ladislavmaris.github.io/" target="_blank" class="btn btn-outline-light"><i class="fab fa-github me-1"></i> Github Pages</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-    </div> <footer>
+    </div>
+
+    <footer>
         <div class="container text-center">
-            <div class="row align-items-center mb-3">
-                <div class="col-md-6"><img src="https://www.fbi.uniza.sk/images/logo_fbi.png" alt="FBI UNIZA Logo" class="footer-logo"></div>
-                <div class="col-md-6"><img src="https://www.uniza.sk/uniza/css/images/logo.png" alt="UNIZA Logo" class="footer-logo"></div>
-            </div>
-            <p class="mb-1">© 2025 Ladislav Mariš | FRAM Analytical Platform</p>
-            <p class="text-muted" style="font-size:0.8rem">Developed at the <a href="https://www.fbi.uniza.sk/" target="_blank">Faculty of Security Engineering</a>, <a href="https://www.uniza.sk/" target="_blank">Žilinská univerzita v Žiline</a>.</p>
-            <a href="https://github.com/ladislavmaris" target="_blank" class="me-3"><i class="fab fa-github"></i> Codebase</a>
-            <a href="https://orcid.org/0000-0003-4952-9055" target="_blank"><i class="fab fa-orcid"></i> ORCID: 0000-0003-4952-9055</a>
+            <img src="https://www.uniza.sk/images/uniza_logo_kombinovane.png" alt="UNIZA Logo" class="footer-logo mb-4">
+            <p class="fw-bold">© 2025 Ladislav Mariš | FRAM Research Project</p>
+            <p class="small text-muted">Faculty of Security Engineering, Žilinská univerzita v Žiline</p>
+            <p class="small">Scientific Dashboard for Fractal Risk Assessment in Complex Environments.</p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // --- SLOVNÍK PRE DVOJJAZYČNOSŤ ---
+        let currentLang = 'en';
+
+        // --- DICTIONARY ---
         const dict = {
             en: {
-                appTitle: "Analytical Platform",
-                menuCalc: "Calculator", menuTheory: "Theory", menuMethod: "Methodology", menuContact: "Contact",
-                sectionCalc: "Fractal Risk Assessment Calculator", mathModel: "Scientific Mathematical Model",
-                liveEquation: "Live Computing...", totalRisk: "Total Fractal Risk (R_f)", riskStatus: "Live Computation",
-                panelScenarios: "📝 Case Studies (Quick Load)", btnWater: "💧 Water Utility", btnCampus: "🏫 Campus Target",
-                panelBase: "1. Aleatoric Uncertainty (Base PPS)", labelP: "Probability (P)", labelI: "Impact (I_norm)",
-                panelFractal: "2. Epistemic Uncertainty (FRAM)", labelGamma: "Epistemic Uncertainty (γ)", labelDf: "Fractal Dim. (D_f)", labelL: "Lacunarity (L_norm)", labelW: "Weight (w1)",
-                chartDecompTitle: "Decomposition", chartRadarTitle: "Vulnerability Radar", chartSensTitle: "Sensitivity (Riziko vs γ)", chartSurfTitle: "3D Heatmap (Risk, γ, D_f)",
-                tableLiveTitle: "Live scientific interpretation", thParam: "Variable", thValue: "Value", thInterpretation: "Scientific Interpretation",
-                nameG: "(Uncertainty)", nameDf: "(Complexity)", nameL: "(Sensor Gaps)",
-                
-                // Tooltips EN
-                ttP: "<strong>Probability (P):</strong> Derived from PPS models (e.g., EASI). Higher values indicate an easier path for attackers.",
-                ttI: "<strong>Impact (I_norm):</strong> Normalized severity of conseq. High value means catastrophic incident.",
-                ttG: "<strong>γ (Gamma):</strong> Epistemic void. Proportion of unanalyzed space. Set by analytical scope.",
-                ttDf: "<strong>Df:</strong> Architectural complexity via Box-Counting. Values near 2.0 = Chaos/Delay.",
-                ttL: "<strong>L:</strong> Heterogeneity of sensor blind spots. High value = clustered gaps.",
-                ttW: "<strong>w1:</strong> Calibrates weight. Higher w1 emphasizes chaos over sensors.",
-                
-                // Teória & Metodológia EN
-                sectionTheory: "Theotetical Framework", theoryProbTitle: "Aleatoric Uncertainty vs. Epistemic Void", theoryProbDesc: "Traditional Physical Protection Systems (PPS) like EASI calculate aleatoric uncertainty on known adversary paths. FRAM addresses epistemic uncertainty—the risk of unanalyzed spaces.",
-                theoryFractalTitle: "Why Fractal Geometry?", theoryFractalDesc: "Facilities are not Euclidean; they are chaotic. Fractal dimension measures the roughness that hinders responses, and lacunarity measures the texture of sensor blind spots.",
-                sectionMethod: "In-Depth Methodology & Range Tables", methVarTitle: "Detailed Parameter Classification & Scientific Range", thDescription: "Description & Methodology", thRange: "Scientific Range", thImpact: "Impact on Total Risk (R_f)",
-                rowDescG: "Epistemic Uncertainty. Proportion of non-analyzed paths. Determined by facility scale.", rowImpG: "Multiplier of spatial penalties.",
-                rowDescDf: "Fractal Dimension of barriers. Extracted via Box-Counting on CAD/GIS floorplans.", rowImpDf: "High values cause high delay/chaos for response.",
-                rowDescL: "Normalized Lacunarity of sensor coverage. Extracted via Gliding-Box.", rowImpL: "High values mean clustered blind spots (safe attacker transit).",
-                rowDescW: "Calibration weight (relative importance). Set by expert AHP method.", rowImpW: "Higher w1 means bariers are more critical than sensors."
+                headDash: "Analytical Risk Dashboard", headMath: "Theoretical Model Formalization", headScen: "Quick Scenario Load", headParams: "Input Variables Control", headMeth: "Extended Methodology",
+                resTitle: "Total Fractal Risk (R_f)", thVar: "Variable", thStat: "Status", thMeaning: "Interpretation",
+                methNorm: "To ensure mathematical stability and avoid 'Double Counting', all spatial inputs are normalized. Base PPS risk (Aleatoric) remains primary, while fractal penalties act as modifiers.",
+                methAlgo: "FRAM uses Box-Counting for fractal dimension (Df), quantifying architectural chaos, and Gliding-Box for Lacunarity (L), quantifying sensor blind spot texture.",
+                thDesc: "Methodology & Scientific Logic", tdG: "Epistemic Uncertainty. Proportion of facility not analyzed by PPS. Bridge between models.", tdDf: "Fractal Dimension. Df=1 (flat), Df=2 (maximal chaos).",
+                tdL: "Lacunarity. Gap distribution. High L means massive safe zones for intruders.", tdW: "Weights. Expert AHP method result to balance bariers vs sensors.",
+                risk_l: "Low", risk_m: "Medium", risk_h: "High", risk_c: "Critical"
             },
             sk: {
-                appTitle: "Analytická Platforma",
-                menuCalc: "Kalkulačka", menuTheory: "Teória", menuMethod: "Metodológia", menuContact: "Kontakt",
-                sectionCalc: "FRAM Analytická Kalkulačka", mathModel: "Vedecký Matematický Model",
-                liveEquation: "Aktívny výpočet...", totalRisk: "Celkové Fraktálne Riziko (R_f)", riskStatus: "Aktívny výpočet",
-                panelScenarios: "📝 Prípadové štúdie (Rýchle načítanie)", btnWater: "💧 Vodárenský objekt", btnCampus: "🏫 Univerzitný kampus",
-                panelBase: "1. Aleatorická neistota (PPS model)", labelP: "Pravdepodobnosť (P)", labelI: "Normalizovaný dopad (I_norm)",
-                panelFractal: "2. Epistemická neistota (FRAM)", labelGamma: "Epistemická neistota (γ)", labelDf: "Fraktálna dim. (D_f)", labelL: "Lakunarita (L_norm)", labelW: "Váha (w1)",
-                chartDecompTitle: "Rozklad zložiek rizika", chartRadarTitle: "Radar zraniteľnosti", chartSensTitle: "Krivka citlivosti (Riziko vs γ)", chartSurfTitle: "3D Heatmapa (Riziko, γ, D_f)",
-                tableLiveTitle: "Živá vedecká interpretácia", thParam: "Veda. parameter", thValue: "Hodnota", thInterpretation: "Interpretácia",
-                nameG: "(Neistota)", nameDf: "(Zložitosť)", nameL: "(Slepé miesta)",
-
-                // Tooltips SK
-                ttP: "<strong>Pravdepodobnosť (P):</strong> Prevzaté z PPS modelov (napr. EASI). Vyjadruje jednoduchosť trasy pre útočníka.",
-                ttI: "<strong>Dopad (I_norm):</strong> Normalizovaná závažnosť následkov (0 až 1).",
-                ttG: "<strong>γ (Gama):</strong> Epistemický void. Podiel nepreskúmaného priestoru. Určené rozsahom analýzy.",
-                ttDf: "<strong>Df:</strong> Architektonická zložitosť via Box-Counting. Hodnoty k 2.0 = Chaos/Spomalenie.",
-                ttL: "<strong>L:</strong> Heterogenita senzorového pokrytia. Vysoká hodnota = zhluknuté slepé uhly.",
-                ttW: "<strong>w1:</strong> Kalibruje váhu. Vyššie w1 kladie dôraz na chaos bariér.",
-
-                // Teória & Metodológia SK
-                sectionTheory: "Teoretický Rámec", theoryProbTitle: "Aleatorická neistota vs. Epistemický void", theoryProbDesc: "Tradičné PPS modely (ako EASI) počítajú aleatorickú neistotu na známych trasách. FRAM rieši epistemickú neistotu—riziko neprebádaných priestorov.",
-                theoryFractalTitle: "Prečo práve fraktály?", theoryFractalDesc: "Budovy nie sú euklidovské, sú chaotické. Fraktálna dimenzia meria drsnosť, ktorá spomaľuje reakciu, a lakunarita textúru senzorových dier.",
-                sectionMethod: "Hĺbková Metodológia a Tabuľky hodnôt", methVarTitle: "Detailná klasifikácia parametrov a vedecký rozsah", thDescription: "Opis a metodika extrakcie", thRange: "Vedecký rozsah", thImpact: "Vplyv na celkové riziko (R_f)",
-                rowDescG: "Epistemická neistota. Podiel neanalyzovaných trás. Určené rozsahom objektu.", rowImpG: "Násobiteľ priestorových penalizácií.",
-                rowDescDf: "Fraktálna dimenzia bariér. Extrahované cez Box-Counting z CAD/GIS pôdorysov.", rowImpDf: "Vysoké hodnoty spôsobujú chaos a taktickú nevýhodu.",
-                rowDescL: "Normalizovaná Lakunarita pokrytia. Extrahované cez Gliding-Box.", rowImpL: "Vysoké hodnoty = zhluknuté slepé uhly (bezpečný prechod).",
-                rowDescW: "Kalibračná váha (relatívna dôležitosť). Určené expertne metódou AHP.", rowImpW: "Vyššie w1 znamená, že chaos bariér je kritickejší."
+                headDash: "Analytický panel rizika", headMath: "Teoretická formalizácia modelu", headScen: "Rýchle načítanie scenárov", headParams: "Ovládanie vstupných premenných", headMeth: "Rozšírená metodológia",
+                resTitle: "Celkové fraktálne riziko (R_f)", thVar: "Prem.", thStat: "Stav", thMeaning: "Interpretácia",
+                methNorm: "Pre stabilitu a zamedzenie 'Dvojitého započítania' sú všetky priestorové vstupy normalizované. PPS riziko (aleatorické) zostáva základom, fraktálne tresty sú modifikátory.",
+                methAlgo: "FRAM využíva Box-Counting pre fraktálnu dimenziu (Df) - kvantifikáciu chaosu, a Gliding-Box pre lakunaritu (L) - kvantifikáciu textúry slepých uhlov.",
+                thDesc: "Metodológia a vedecká logika", tdG: "Epistemická neistota. Podiel neprebádaného priestoru. Most medzi PPS a FRAM.", tdDf: "Fraktálna dimenzia. Df=1 (rovina), Df=2 (maximálny priestorový chaos).",
+                tdL: "Lakunarita. Distribúcia dier. Vysoké L znamená masívne slepé uhly pre narušiteľa.", tdW: "Váhy. Výsledok expertnej metódy AHP pre rovnováhu bariér a senzorov.",
+                risk_l: "Nízke", risk_m: "Stredné", risk_h: "Vysoké", risk_c: "Kritické"
             }
         };
 
-        let currentLang = 'en';
-
-        // --- PREPÍNANIE JAZYKOV ---
-        function setLanguage(lang) {
+        function setLang(lang) {
             currentLang = lang;
-            
-            // Tlačidlá
-            document.getElementById('langEN').classList.toggle('active', lang === 'en');
-            document.getElementById('langSK').classList.toggle('active', lang === 'sk');
-            
-            // Texty podľa data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (dict[lang][key]) el.innerHTML = dict[lang][key];
+                if(dict[lang][key]) el.innerHTML = dict[lang][key];
             });
-
-            // Re-inicializácia Tooltipov
-            initializeTooltips();
-            updateModel(); 
+            calc();
         }
 
-        // --- INICIALIZÁCIA GRAFOV (4 typy) ---
-        // 1. Stacked Bar (Rozklad rizika)
-        const ctxDecomp = document.getElementById('decompChart').getContext('2d');
-        let decompChart = new Chart(ctxDecomp, {
-            type: 'bar',
-            data: { labels: ['Risk'], datasets: [
-                { label: 'Base', data: [0], backgroundColor: '#34495e' },
-                { label: 'Df Penalty', data: [0], backgroundColor: '#e67e22' },
-                { label: 'L Penalty', data: [0], backgroundColor: '#e74c3c' }
-            ]},
-            options: { indexAxis: 'y', responsive: true, scales: { x: { stacked: true, max: 1.5, grid:{color:'#333'} }, y: { stacked: true, display: false } }, plugins: { legend: { position: 'bottom', labels: {color:'#a0a0a0'} } } }
-        });
+        // --- CHARTS ---
+        const cfg = { responsive: true, plugins: { legend: { labels: { color: '#adb5bd' } } }, scales: { r: { grid: { color: '#333' }, pointLabels: { color: '#adb5bd' } }, x: { grid: { color: '#222' }, ticks: { color: '#888' } }, y: { grid: { color: '#222' }, ticks: { color: '#888' } } } };
 
-        // 2. Radar Chart (Profil zraniteľnosti)
-        const ctxRadar = document.getElementById('radarChart').getContext('2d');
-        let radarChart = new Chart(ctxRadar, {
-            type: 'radar',
-            data: { labels: ['P', 'I', 'γ', 'Df norm', 'L'], datasets: [{ data: [0,0,0,0,0], backgroundColor: 'rgba(52, 152, 219, 0.2)', borderColor: '#3498db', pointBackgroundColor: '#2980b9' }]},
-            options: { scales: { r: { min: 0, max: 1, angleLines: {color:'#333'}, grid:{color:'#333'}, ticks: {backdropColor: 'transparent', color:'#a0a0a0'} } }, plugins: { legend: { display: false } } }
-        });
+        const bar = new Chart(document.getElementById('chartBar'), { type: 'bar', data: { labels: ['Risk'], datasets: [{label:'Base',data:[0],backgroundColor:'#34495e'},{label:'Df Pen.',data:[0],backgroundColor:'#e67e22'},{label:'L Pen.',data:[0],backgroundColor:'#e74c3c'}]}, options: { ...cfg, indexAxis: 'y', scales: { x: { stacked: true, max: 1.5 }, y: { stacked: true } } } });
+        const radar = new Chart(document.getElementById('chartRadar'), { type: 'radar', data: { labels: ['P','I','γ','Df-1','L'], datasets: [{data:[0,0,0,0,0],backgroundColor:'rgba(52,152,219,0.2)',borderColor:'#3498db'}]}, options: cfg });
+        const bubble = new Chart(document.getElementById('chartBubble'), { type: 'bubble', data: { datasets: [{ label: 'Risk Sensitivity', data: [], backgroundColor: 'rgba(231, 76, 60, 0.6)' }] }, options: cfg });
 
-        // 3. Line Chart (Analýza citlivosti)
-        const ctxSens = document.getElementById('sensChart').getContext('2d');
-        let sensChart = new Chart(ctxSens, {
-            type: 'line',
-            data: { labels: ['0.0', '0.2', '0.4', '0.6', '0.8', '1.0'], datasets: [
-                { data: [], borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', borderWidth: 3, fill: true, tension: 0.3 },
-                { data: [], backgroundColor: '#e74c3c', pointRadius: 6, type: 'scatter' }
-            ]},
-            options: { scales: { y: { beginAtZero: true, max: 1.5, grid:{color:'#333'}, ticks:{color:'#a0a0a0'} }, x:{ grid:{color:'#333'}, ticks:{color:'#a0a0a0'} } }, plugins: { legend: { display: false } } }
-        });
-
-        // 4. Nový: 2D Surface/Heatmapa pomocou Bar Chart (Citlivosť na γ a Df)
-        const ctxSurface = document.getElementById('surfaceChart').getContext('2d');
-        let surfaceChart = new Chart(ctxSurface, {
-            type: 'bar',
-            data: {
-                labels: ['G:0.2', 'G:0.5', 'G:0.8'], // Tri hodnoty Gamy
-                datasets: [
-                    { label: 'Df:1.2', data: [0,0,0], backgroundColor: 'rgba(52, 152, 219, 0.5)' },
-                    { label: 'Df:1.5', data: [0,0,0], backgroundColor: 'rgba(52, 152, 219, 0.8)' },
-                    { label: 'Df:1.8', data: [0,0,0], backgroundColor: 'rgba(52, 152, 219, 1)' }
-                ]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true, max: 1.5, grid:{color:'#333'}, ticks:{color:'#a0a0a0'} }, x:{ grid:{color:'#333'}, ticks:{color:'#a0a0a0'} } }, plugins: { legend: { position: 'bottom', labels: {color:'#a0a0a0'} } } }
-        });
-
-
-        // --- HLAVNÁ MATEMATICKÁ FUNKCIA ---
-        function updateModel() {
-            // Načítanie vstupov
-            const P = parseFloat(document.getElementById('in_P').value);
-            const I = parseFloat(document.getElementById('in_I').value);
-            const G = parseFloat(document.getElementById('in_G').value);
-            const Df = parseFloat(document.getElementById('in_Df').value);
-            const L = parseFloat(document.getElementById('in_L').value);
-            const w1 = parseFloat(document.getElementById('in_W').value);
+        // --- CORE LOGIC ---
+        function calc() {
+            const P = parseFloat(document.getElementById('inP').value);
+            const I = parseFloat(document.getElementById('inI').value);
+            const G = parseFloat(document.getElementById('inG').value);
+            const Df = parseFloat(document.getElementById('inDf').value);
+            const L = parseFloat(document.getElementById('inL').value);
+            const w1 = parseFloat(document.getElementById('inW').value);
             const w2 = 1 - w1;
 
-            // Aktualizácia hodnôt pri posuvníkoch
-            document.getElementById('val_P').innerText = P.toFixed(3);
-            document.getElementById('val_I').innerText = I.toFixed(2);
-            document.getElementById('val_G').innerText = G.toFixed(2);
-            document.getElementById('val_Df').innerText = Df.toFixed(2);
-            document.getElementById('val_L').innerText = L.toFixed(2);
-            document.getElementById('val_W').innerText = w1.toFixed(2);
+            document.getElementById('valP').innerText = P.toFixed(3);
+            document.getElementById('valI').innerText = I.toFixed(2);
+            document.getElementById('valG').innerText = G.toFixed(2);
+            document.getElementById('valDf').innerText = Df.toFixed(2);
+            document.getElementById('valL').innerText = L.toFixed(2);
+            document.getElementById('valW').innerText = w1.toFixed(2);
 
-            // Matematika FRAM
             const base = P * I;
-            const complexityPenalty = base * G * (w1 * (Df - 1));
-            const lacunarityPenalty = base * G * (w2 * L);
-            const modifier = 1 + G * (w1 * (Df - 1) + w2 * L);
-            const totalRisk = base * modifier;
+            const penDf = base * G * (w1 * (Df - 1));
+            const penL = base * G * (w2 * L);
+            const Rf = base + penDf + penL;
 
-            // Výpis výsledkov
-            document.getElementById('out_totalRisk').innerText = totalRisk.toFixed(3);
+            // Update UI
+            document.getElementById('rfOut').innerText = Rf.toFixed(3);
+            document.getElementById('liveFormula').innerText = `Rf = (${P.toFixed(3)}*${I.toFixed(2)}) * [ 1 + ${G.toFixed(2)} * (${w1.toFixed(2)}*(${Df.toFixed(2)}-1) + ${w2.toFixed(2)}*${L.toFixed(2)}) ] = ${Rf.toFixed(3)}`;
             
-            // Risk Meter a Badge
-            let meterBar = document.getElementById('riskMeterBar');
-            let badge = document.getElementById('riskBadge');
-            let meterPerc = (Math.min(totalRisk, 1.2) / 1.2) * 100;
-            meterBar.style.width = meterPerc + '%';
-            
-            if(totalRisk < 0.3) { meterBar.style.backgroundColor = '#2ecc71'; badge.className = "badge bg-success mt-3"; badge.innerText = "Low Risk"; }
-            else if(totalRisk < 0.8) { meterBar.style.backgroundColor = '#f1c40f'; badge.className = "badge bg-warning text-dark mt-3"; badge.innerText = "Medium Risk"; }
-            else { meterBar.style.backgroundColor = '#e74c3c'; badge.className = "badge bg-danger mt-3"; badge.innerText = "Critical Risk"; }
+            let b = document.getElementById('riskLevel');
+            if(Rf < 0.3) { b.className="badge bg-success mt-4 px-4 py-2"; b.innerText=dict[currentLang].risk_l; }
+            else if(Rf < 0.7) { b.className="badge bg-warning text-dark mt-4 px-4 py-2"; b.innerText=dict[currentLang].risk_m; }
+            else if(Rf < 1.0) { b.className="badge bg-danger mt-4 px-4 py-2"; b.innerText=dict[currentLang].risk_h; }
+            else { b.className="badge bg-dark mt-4 px-4 py-2 border border-danger"; b.innerText=dict[currentLang].risk_c; }
 
-            // Živá rovnica
-            document.getElementById('liveEquation').innerHTML = 
-                `<strong>Rf = (${P.toFixed(3)} * ${I.toFixed(2)}) * [ 1 + <span style="color:#e74c3c">${G.toFixed(2)}</span> * ( ${w1.toFixed(2)} * (<span style="color:#f1c40f">${Df.toFixed(2)}</span> - 1) + ${w2.toFixed(2)} * <span style="color:#f1c40f">${L.toFixed(2)}</span> ) ] = <span style="color:#e74c3c; font-size:1.4rem;">${totalRisk.toFixed(3)}</span></strong>`;
+            // Charts
+            bar.data.datasets[0].data = [base];
+            bar.data.datasets[1].data = [penDf];
+            bar.data.datasets[2].data = [penL];
+            bar.update();
 
-            // AKTUALIZÁCIA GRAFOV
-            // 1. Stacked Bar
-            decompChart.data.datasets[0].data = [base];
-            decompChart.data.datasets[1].data = [complexityPenalty];
-            decompChart.data.datasets[2].data = [lacunarityPenalty];
-            decompChart.update();
+            radar.data.datasets[0].data = [P, I, G, Df-1, L];
+            radar.update();
 
-            // 2. Radar (Df-1 pre normalizáciu)
-            radarChart.data.datasets[0].data = [P, I, G, (Df - 1), L];
-            radarChart.update();
-
-            // 3. Line Chart (Citlivosť)
-            let curve = [];
-            for(let g=0; g<=1.05; g+=0.2) curve.push(base * (1 + g * (w1*(Df-1) + w2*L)));
-            sensChart.data.datasets[0].data = curve;
-            sensChart.data.datasets[1].data = [{x: G, y: totalRisk}];
-            sensChart.update();
-
-            // 4. Surface/Heatmapa
-            surfaceChart.data.datasets[0].data = [base*(1+0.2*(w1*(1.2-1)+w2*L)), base*(1+0.5*(w1*(1.2-1)+w2*L)), base*(1+0.8*(w1*(1.2-1)+w2*L))];
-            surfaceChart.data.datasets[1].data = [base*(1+0.2*(w1*(1.5-1)+w2*L)), base*(1+0.5*(w1*(1.5-1)+w2*L)), base*(1+0.8*(w1*(1.5-1)+w2*L))];
-            surfaceChart.data.datasets[2].data = [base*(1+0.2*(w1*(1.8-1)+w2*L)), base*(1+0.5*(w1*(1.8-1)+w2*L)), base*(1+0.8*(w1*(1.8-1)+w2*L))];
-            surfaceChart.update();
-
-            // Živá tabuľka interpretácií
-            updateTableLive(G, Df, L);
-        }
-
-        // Live interpretácia v tabuľke
-        function updateTableLive(G, Df, L) {
-            document.getElementById('tbl_G_val').innerText = G.toFixed(2);
-            document.getElementById('tbl_Df_val').innerText = Df.toFixed(2);
-            document.getElementById('tbl_L_val').innerText = L.toFixed(2);
-
-            let txtG, txtDf, txtL;
-            if(currentLang === 'en') {
-                txtG = G < 0.4 ? "Verified paths (aleatoric dominate)." : "High epistemic uncertainty.";
-                txtDf = Df < 1.4 ? "Trivial open space." : "Chaos favors attacker.";
-                txtL = L < 0.4 ? "Homogeneous sensors." : "Clustered blind spots.";
-            } else {
-                txtG = G < 0.4 ? "Overené trasy (prevláda aleatorická n.)." : "Vysoká epistemická neistota.";
-                txtDf = Df < 1.4 ? "Triviálny, otvorený priestor." : "Chaos praje útočníkovi.";
-                txtL = L < 0.4 ? "Homogénne, kvalitné pokrytie." : "Zhluknuté slepé uhly.";
+            // Bubble chart (Simulation of 10 points)
+            let bData = [];
+            for(let i=0; i<10; i++) {
+                let simG = i/10;
+                let simRf = base * (1 + simG * (w1*(Df-1) + w2*L));
+                bData.push({ x: simG, y: Df, r: simRf * 15 });
             }
-            document.getElementById('tbl_G_text').innerText = txtG;
-            document.getElementById('tbl_Df_text').innerText = txtDf;
-            document.getElementById('tbl_L_text').innerText = txtL;
+            bubble.data.datasets[0].data = bData;
+            bubble.update();
+
+            // Table
+            let html = `
+                <tr><td>γ</td><td>${G < 0.4 ? 'OK' : 'VOID'}</td><td>${G < 0.4 ? 'Low epistemic uncertainty.' : 'Massive unanalyzed areas.'}</td></tr>
+                <tr><td>D<sub>f</sub></td><td>${Df < 1.4 ? 'Euclid' : 'Fractal'}</td><td>${Df < 1.4 ? 'Simple architecture.' : 'Tactical labyrinth identified.'}</td></tr>
+                <tr><td>L</td><td>${L < 0.4 ? 'Uniform' : 'Gaps'}</td><td>${L < 0.4 ? 'Solid sensor coverage.' : 'Clustered sensor failures.'}</td></tr>
+            `;
+            document.getElementById('tableBody').innerHTML = html;
         }
 
-        // Scenáre
-        function loadScenario(type) {
-            if(type === 'water') {
-                document.getElementById('in_P').value = 0.283; document.getElementById('in_I').value = 0.95; document.getElementById('in_G').value = 0.15;
-                document.getElementById('in_Df').value = 1.82; document.getElementById('in_L').value = 0.12; document.getElementById('in_W').value = 0.80;
+        function loadScen(sc) {
+            if(sc==='water') {
+                document.getElementById('inP').value=0.283; document.getElementById('inI').value=0.95; document.getElementById('inG').value=0.15;
+                document.getElementById('inDf').value=1.82; document.getElementById('inL').value=0.12; document.getElementById('inW').value=0.80;
             } else {
-                document.getElementById('in_P').value = 0.850; document.getElementById('in_I').value = 0.85; document.getElementById('in_G').value = 0.95;
-                document.getElementById('in_Df').value = 1.34; document.getElementById('in_L').value = 0.78; document.getElementById('in_W').value = 0.40;
+                document.getElementById('inP').value=0.850; document.getElementById('inI').value=0.85; document.getElementById('inG').value=0.95;
+                document.getElementById('inDf').value=1.34; document.getElementById('inL').value=0.78; document.getElementById('inW').value=0.40;
             }
-            updateModel();
+            calc();
         }
 
-        // Inicializácia Tooltipov
-        function initializeTooltips() {
-            // Dispose existing tooltips
-            const existingTooltips = document.querySelectorAll('.tooltip');
-            existingTooltips.forEach(t => t.remove());
-
-            const ids = ['P', 'I', 'G', 'Df', 'L', 'W'];
-            ids.forEach(id => {
-                const el = document.getElementById('tt-' + id);
-                if (el) {
-                    el.setAttribute('title', dict[currentLang]['tt' + id]);
-                    new bootstrap.Tooltip(el, { html: true });
-                }
-            });
-        }
-
-        // INIT
-        loadScenario('water'); // Default načítať Vodáreň
+        // Init
+        setLang('en');
     </script>
 </body>
 </html>
